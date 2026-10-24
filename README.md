@@ -15,6 +15,40 @@ Lokales Diktieren für Mac und iPhone. Klangschrift verarbeitet Aufnahmen auf de
 - **iPhone:** kompakte Diktattastatur, Rückkehr zur vorherigen App, Wischhinweis an der unteren Gestenzone sowie Verlauf und eigene Schreibweisen.
 - **Lokal:** Diktate bleiben auf dem Gerät. Die Wirkung eigener Wörter hängt vom gewählten Modell ab und ist nicht garantiert.
 
+## Ein Blick in die Mac-App
+
+Die Diktatansicht bündelt Aufnahme, Übersicht und die letzten Diktate.
+
+![Diktatansicht von Klangschrift](docs/images/mac-dictation.png)
+
+<details>
+<summary>Weitere Ansichten: Verlauf und Modellvergleich</summary>
+
+Der Verlauf zeigt gespeicherte Diktate und eine Suche. Das Bild enthält einen neutralen Testeintrag.
+
+![Verlauf von Klangschrift](docs/images/mac-history.png)
+
+Der Modellvergleich zeigt die verfügbaren Modelle und ihre in der App dargestellten Eigenschaften.
+
+![Modellvergleich von Klangschrift](docs/images/mac-models.png)
+
+</details>
+
+### iPhone
+
+<p>
+  <img src="docs/images/iphone-dictation.png" width="250" alt="Klangschrift-Diktatansicht auf dem iPhone">
+  <img src="docs/images/iphone-keyboard.png" width="250" alt="Klangschrift-Tastatur in einer neutralen Notiz">
+  <img src="docs/images/iphone-swipe.png" width="250" alt="Hinweis zur Rückwischgeste auf dem iPhone">
+</p>
+
+<details>
+<summary>Einstellungen auf dem iPhone</summary>
+
+<img src="docs/images/iphone-settings.png" width="250" alt="Klangschrift-Einstellungen auf dem iPhone">
+
+</details>
+
 ## Bauen
 
 Klangschrift wird derzeit aus dem Quellcode gebaut. Eine allgemein installierbare iPhone-Datei und ein beglaubigtes Mac-Paket werden nicht angeboten.
