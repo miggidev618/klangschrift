@@ -26,4 +26,6 @@ site_packages="$(.build/python/bin/python -c 'import sysconfig; print(sysconfig.
 
 Der Builder lädt das gepinnte Moonshine-SDK mit Prüfsumme, baut App, Worker und Installer mit zwei Jobs, bündelt Ressourcen, den Python-Helfer, das übergebene Python-3.14-Laufzeitsystem und die Modellmanifestdaten. Er signiert die lokale `.app` ad hoc und installiert oder startet sie nicht. Die Ausgabe ist ein getesteter Quellbau auf dem genannten Host, keine notarisiert verteilte oder allgemein portable Standalone-App.
 
+Vor dem Signieren entfernt der Builder lokale Debug-Symbole aus den drei eigenen Executables und lässt ausschließlich die kopierte Python-Standardbibliotheks-Test-Suite weg. Produktcode, Python-Laufzeit, Modellressourcen und Lizenzhinweise bleiben Bestandteil des Pakets.
+
 Der Quellbau und die Signaturprüfung sind erfolgt. Ein nativer Start, Modellbezug, Aufnahme, Transkription, Einfügen bzw. Kopieren, Verlauf und Neustart wurden damit nicht abgenommen. Modelle werden nicht mit dem Repository geliefert; siehe [MODELS.md](MODELS.md).

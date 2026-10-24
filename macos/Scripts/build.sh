@@ -91,6 +91,9 @@ cp Resources/Info.plist.template "$app/Contents/Info.plist"
 cp "$products/KlangschriftApp" "$app/Contents/MacOS/Klangschrift"
 cp "$products/KlangschriftDesktopNativeWorker" "$app/Contents/MacOS/"
 cp "$products/KlangschriftDesktopModelInstaller" "$app/Contents/MacOS/"
+for executable in Klangschrift KlangschriftDesktopNativeWorker KlangschriftDesktopModelInstaller; do
+  xcrun strip -S "$app/Contents/MacOS/$executable"
+done
 cp Helper/mlx-helper/klangschrift_mlx_helper.py "$app/Contents/Resources/Helper/"
 cp Vendor/ModelCatalog/AP04-REFERENCE-MANIFESTS.json "$app/Contents/Resources/"
 cp Resources/Brand/KlangschriftLogoOchre.png "$app/Contents/Resources/Brand/"
@@ -108,6 +111,7 @@ for notice in \
   cp "$notice" "$app/Contents/Resources/Notices/SDKs/${notice:t}"
 done
 ditto --norsrc --noextattr --noacl "$version_root" "$app/Contents/Resources/Runtime/Python.framework/Versions/3.14"
+rm -rf "$app/Contents/Resources/Runtime/Python.framework/Versions/3.14/lib/python3.14/test"
 runtime_site="$app/Contents/Resources/Runtime/Python.framework/Versions/3.14/lib/python3.14/site-packages"
 rm -rf "$runtime_site"
 mkdir -p "${runtime_site:h}"
