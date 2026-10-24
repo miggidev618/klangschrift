@@ -10,4 +10,6 @@ Für Diktate benötigt die Mac-App Mikrofonzugriff und kann für das Einfügen i
 
 Im Mac-Verlauf gibt es „Auswahl löschen“ und „Alles löschen“. Auswahl löschen verschiebt zunächst in den internen Papierkorb; „Alles löschen“ ist endgültig. Auf dem iPhone lassen sich Verlaufseinträge einzeln entfernen.
 
+Auf dem iPhone bietet „Speicher & Daten“ zusätzlich das Löschen des gesamten Verlaufs, nicht aktiver heruntergeladener Modelle sowie Klangschrift-eigener temporärer und Cache-Dateien. Wörterbuch und Einstellungen bleiben beim Verlaufslöschen erhalten. Die Bereinigung ist nur möglich, wenn kein Diktat, Modellvorgang, Download oder Tastaturvorgang läuft.
+
 Vor dem Teilen von Fehlerberichten Diktate, Audio, Verlauf, Tokens und private Geräteinformationen entfernen.

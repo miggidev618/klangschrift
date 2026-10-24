@@ -16,6 +16,8 @@ final class RecorderViewModel: ObservableObject {
     @Published private(set) var preparedModels: Set<DictationModelID> = []
     @Published private(set) var installedModels: Set<DictationModelID> = []
     @Published private(set) var downloads: [DictationModelID: DictationModelInstallState] = [:]
+    @Published private(set) var isMaintainingStorage = false
+    @Published private(set) var storageUsage = StorageMaintenanceUsage(historyBytes: 0, downloadedModelBytes: 0, removableModelBytes: 0, cacheAndTemporaryBytes: 0)
     @Published var favorites = KeyboardModelFavorites()
     @Published var preparedFavorites: Set<DictationModelID> = []
     @Published var statsRevision = 0
@@ -42,15 +44,15 @@ final class RecorderViewModel: ObservableObject {
         installed: { FileManager.default.fileExists(atPath: DictationModelStorage.directory(for: $0).appendingPathComponent("manifest.json").path) },
         quiet: { [weak self] in
             guard let self else { return false }
-            return !self.isStarting && !self.isRecording && !self.isTranscribing && !self.isPreparingModel && !self.keyboardIsBusy()
+            return !self.isMaintainingStorage && !self.isStarting && !self.isRecording && !self.isTranscribing && !self.isPreparingModel && !self.keyboardIsBusy()
         }, changed: { [weak self] in await self?.syncPreparedStatus() })
     private func configurePreloader() {
         preloader.configure(models: favorites.models.compactMap { DictationModelID(rawValue: $0.id) }, revision: favorites.revision, selected: selectedModel)
     }
     func preloadVisible() { configurePreloader(); preloader.surfaceVisible(foreground: UIApplication.shared.applicationState == .active) }
-    func preloadQuietPhase() { preloader.quietPhase() }
+    func preloadQuietPhase() { guard !isMaintainingStorage else { return }; preloader.quietPhase() }
     func preloadActive() {
-        preloader.becameActive()
+        if !isMaintainingStorage { preloader.becameActive() }
         if let pendingInterruptedText {
             UIPasteboard.general.string = pendingInterruptedText
             self.pendingInterruptedText = nil
@@ -92,7 +94,7 @@ final class RecorderViewModel: ObservableObject {
     }
 
     func begin() {
-        guard !isStarting, !isPreparingModel, !isRecording, !isTranscribing,
+        guard !isMaintainingStorage, !isStarting, !isPreparingModel, !isRecording, !isTranscribing,
               let attempt = startPolicy.reserve(modelID: selectedModel,
                 foreground: UIApplication.shared.applicationState == .active, keyboardBusy: keyboardIsBusy()) else { return }
         let releasePreload = preloadDemand([attempt.modelID])
@@ -113,7 +115,7 @@ final class RecorderViewModel: ObservableObject {
             }
             let allowed = {
                 generation == self.startGeneration && !Task.isCancelled &&
-                UIApplication.shared.applicationState == .active && !self.keyboardIsBusy()
+                UIApplication.shared.applicationState == .active && !self.isMaintainingStorage && !self.keyboardIsBusy()
             }
             do {
                 let ready = try await startPolicy.prepareAndPin(attempt, allowed: allowed,
@@ -244,7 +246,138 @@ final class RecorderViewModel: ObservableObject {
 
     func openSettings() {
         refreshModels()
+        refreshStorageUsage()
         if let spellingsLoadError { error = spellingsLoadError }
+    }
+
+    var canMaintainStorage: Bool { !isMaintainingStorage && storageActivity.isIdle }
+
+    private var storageActivity: StorageMaintenanceActivity {
+        StorageMaintenanceActivity(
+            isStarting: isStarting,
+            isRecording: isRecording,
+            isTranscribing: isTranscribing,
+            isPreparingModel: isPreparingModel,
+            hasDownload: downloads.values.contains { if case .downloading = $0 { return true }; return false },
+            keyboardIsBusy: keyboardIsBusy()
+        )
+    }
+
+    func refreshStorageUsage() {
+        let activeModel = selectedModel
+        Task { [weak self] in
+            do {
+                let usage = try await Task.detached { try StorageMaintenance.usage(activeModel: activeModel) }.value
+                self?.storageUsage = usage
+            } catch {
+                self?.error = self?.storageMaintenanceMessage(for: error)
+            }
+        }
+    }
+
+    func clearAllHistory() {
+        guard beginStorageMaintenance() else { return }
+        do {
+            try StorageMaintenance.clearHistory(activity: storageActivity)
+            history = []
+            refreshStorageUsage()
+        } catch {
+            self.error = storageMaintenanceMessage(for: error)
+        }
+        finishStorageMaintenance()
+    }
+
+    func removeDownloadedModels() {
+        guard beginStorageMaintenance() else { return }
+        let activeModel = selectedModel
+        Task { [weak self] in
+            guard let self else { return }
+            await preloader.waitUntilIdle()
+            guard storageActivity.isIdle else {
+                error = storageMaintenanceMessage(for: StorageMaintenanceError.busy)
+                finishStorageMaintenance()
+                return
+            }
+            guard await transcriber.releaseResidentsForStorageMaintenance() else {
+                error = storageMaintenanceMessage(for: StorageMaintenanceError.busy)
+                finishStorageMaintenance()
+                return
+            }
+            guard storageActivity.isIdle else {
+                error = storageMaintenanceMessage(for: StorageMaintenanceError.busy)
+                finishStorageMaintenance()
+                return
+            }
+            do {
+                let activity = storageActivity
+                _ = try await Task.detached { try StorageMaintenance.removeDownloadedModels(keeping: activeModel, activity: activity) }.value
+                preparedModelID = nil; preparedModels = []; preparedFavorites = []
+                refreshModels()
+                refreshStorageUsage()
+            } catch {
+                self.error = storageMaintenanceMessage(for: error)
+            }
+            finishStorageMaintenance()
+        }
+    }
+
+    func clearCachesAndTemporary() {
+        guard beginStorageMaintenance() else { return }
+        Task { [weak self] in
+            guard let self else { return }
+            await preloader.waitUntilIdle()
+            guard storageActivity.isIdle else {
+                error = storageMaintenanceMessage(for: StorageMaintenanceError.busy)
+                finishStorageMaintenance()
+                return
+            }
+            guard await transcriber.releaseResidentsForStorageMaintenance() else {
+                error = storageMaintenanceMessage(for: StorageMaintenanceError.busy)
+                finishStorageMaintenance()
+                return
+            }
+            guard storageActivity.isIdle else {
+                error = storageMaintenanceMessage(for: StorageMaintenanceError.busy)
+                finishStorageMaintenance()
+                return
+            }
+            do {
+                let activity = storageActivity
+                _ = try await Task.detached { try StorageMaintenance.clearCachesAndTemporary(activity: activity) }.value
+                preparedModelID = nil; preparedModels = []; preparedFavorites = []
+                refreshStorageUsage()
+            } catch {
+                self.error = storageMaintenanceMessage(for: error)
+            }
+            finishStorageMaintenance()
+        }
+    }
+
+    private func beginStorageMaintenance() -> Bool {
+        guard !isMaintainingStorage, storageActivity.isIdle else {
+            error = storageMaintenanceMessage(for: StorageMaintenanceError.busy)
+            return false
+        }
+        isMaintainingStorage = true
+        preloader.inactive()
+        return true
+    }
+
+    private func finishStorageMaintenance() {
+        isMaintainingStorage = false
+        preloader.becameActive()
+    }
+
+    private func storageMaintenanceMessage(for error: Error) -> String {
+        if let error = error as? StorageMaintenanceError {
+            switch error {
+            case .busy:
+                return L("Storage cleanup is available only when dictation, model work, and keyboard work are idle.", "Speicher bereinigen ist nur möglich, wenn Diktat, Modellvorgang und Tastaturvorgang ruhen.")
+            case .unsafePath:
+                return L("Storage cleanup stopped because a path was not safe.", "Die Speicherbereinigung wurde wegen eines unsicheren Pfads gestoppt.")
+            }
+        }
+        return L("Couldn't clear storage. Please try again.", "Der Speicher konnte nicht bereinigt werden. Bitte versuche es erneut.")
     }
 
     func refreshModels() {
@@ -261,7 +394,7 @@ final class RecorderViewModel: ObservableObject {
         DictationModelSelection.visibleModels(whisperBaseInstalled: installedModels.contains(.whisperBaseCoreML))
     }
     private func migrateModelPreferencesIfQuiet() {
-        guard !isRecording, !isStarting, !isTranscribing, !isPreparingModel, !keyboardIsBusy() else { return }
+        guard !isMaintainingStorage, !isRecording, !isStarting, !isTranscribing, !isPreparingModel, !keyboardIsBusy() else { return }
         let baseReady = installedModels.contains(.whisperBaseCoreML)
         DictationModelSelection.migrateIfReady(whisperBaseInstalled: baseReady)
         do {
@@ -274,7 +407,7 @@ final class RecorderViewModel: ObservableObject {
     }
 
     func setFavorite(slot: Int, rawID: String) -> Bool {
-        guard !isRecording, !isStarting, !isTranscribing, !isPreparingModel,
+        guard !isMaintainingStorage, !isRecording, !isStarting, !isTranscribing, !isPreparingModel,
               let store = KeyboardModelFavoritesStore() else { return false }
         do {
             var next = try store.read()
@@ -295,7 +428,7 @@ final class RecorderViewModel: ObservableObject {
     }
 
     func prepareFavorites() {
-        guard !isRecording, !isStarting, !isTranscribing, !isPreparingModel, !favorites.models.isEmpty else { return }
+        guard !isMaintainingStorage, !isRecording, !isStarting, !isTranscribing, !isPreparingModel, !favorites.models.isEmpty else { return }
         let captured = favorites
         let releasePreload = preloadDemand(Set(captured.models.compactMap { DictationModelID(rawValue: $0.id) }))
         isPreparingModel = true; preparedFavorites = []; error = nil
@@ -318,7 +451,7 @@ final class RecorderViewModel: ObservableObject {
     }
 
     func selectModel(_ model: DictationModelID) {
-        guard !isRecording, !isStarting, !isPreparingModel, !isTranscribing,
+        guard !isMaintainingStorage, !isRecording, !isStarting, !isPreparingModel, !isTranscribing,
               preparedModels.contains(model), installedModels.contains(model) else { return }
         Task {
             do {
@@ -331,7 +464,7 @@ final class RecorderViewModel: ObservableObject {
     }
 
     func loadModel(_ model: DictationModelID) {
-        guard downloadTask == nil else { return }
+        guard !isMaintainingStorage, downloadTask == nil else { return }
         downloads[model] = .downloading(received: 0, total: DictationModelDescriptor.descriptor(for: model).bundleBytes)
         error = nil
         downloadTask = Task { [weak self] in
@@ -357,7 +490,7 @@ final class RecorderViewModel: ObservableObject {
     func prepareSelectedModel() { prepareModel(selectedModel) }
 
     func prepareModel(_ modelID: DictationModelID) {
-        guard !isRecording && !isStarting && !isPreparingModel && !isTranscribing else { return }
+        guard !isMaintainingStorage && !isRecording && !isStarting && !isPreparingModel && !isTranscribing else { return }
         let releasePreload = preloadDemand([modelID])
         isPreparingModel = true
         preparedModelID = nil
@@ -456,6 +589,7 @@ struct ContentView: View {
         let model = RecorderViewModel()
         let session = KeyboardSessionController(transcriber: model.transcriber)
         session.onModelDemand = { [weak model] ids in model?.preloadDemand(ids) ?? {} }
+        session.storageMaintenanceActive = { [weak model] in model?.isMaintainingStorage ?? true }
         session.onTranscript = { [weak model] in model?.receiveKeyboardTranscript($0) }
         model.keyboardIsBusy = { [weak session] in
             guard let session else { return false }
@@ -738,6 +872,14 @@ private struct HistoryView: View {
             .scrollContentBackground(.hidden).background(KlangColor.canvas)
             .navigationTitle(L("History", "Verlauf")).navigationBarTitleDisplayMode(.large)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink {
+                        StorageAndDataView(viewModel: viewModel)
+                    } label: {
+                        Text(L("Storage & data", "Speicher & Daten"))
+                            .font(.footnote.weight(.medium))
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
                         HistoryCalendarPicker(markedDays: Set(allDictationDays)) { day in
@@ -888,6 +1030,11 @@ private struct SettingsView: View {
                         Label(L("Manage models", "Modelle verwalten"), systemImage: "square.stack")
                     }.frame(minHeight: 44)
                 }.listRowBackground(Color(uiColor: KlangPalette.surface))
+                Section {
+                    NavigationLink { StorageAndDataView(viewModel: viewModel) } label: {
+                        Label(L("Storage & data", "Speicher & Daten"), systemImage: "externaldrive")
+                    }.frame(minHeight: 44)
+                }.listRowBackground(Color(uiColor: KlangPalette.surface))
                 Section(L("Set up keyboard", "Tastatur einrichten")) {
                     Button {
                         guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
@@ -935,6 +1082,79 @@ private struct SettingsView: View {
         }
     }
 
+}
+
+private struct StorageAndDataView: View {
+    @Environment(\.appLanguageCode) private var appLanguageCode
+    @ObservedObject var viewModel: RecorderViewModel
+    @State private var confirmingHistory = false
+    @State private var confirmingModels = false
+    @State private var confirmingCaches = false
+
+    private var usage: StorageMaintenanceUsage { viewModel.storageUsage }
+    private var actionsDisabled: Bool { !viewModel.canMaintainStorage }
+    private var activeModelTitle: String { DictationModelDescriptor.descriptor(for: viewModel.selectedModel).title }
+
+    var body: some View {
+        List {
+            Section(L("Storage", "Speicher")) {
+                LabeledContent(L("History", "Verlauf"), value: formattedBytes(usage.historyBytes))
+                Button(L("Delete all history", "Gesamten Verlauf löschen"), role: .destructive) { confirmingHistory = true }
+                    .disabled(actionsDisabled)
+                Text(L("Your dictionary and settings remain unchanged.", "Dein Wörterbuch und deine Einstellungen bleiben erhalten."))
+                    .font(.footnote).foregroundStyle(KlangColor.secondary)
+            }.listRowBackground(Color(uiColor: KlangPalette.surface))
+
+            Section(L("Downloaded models", "Heruntergeladene Modelle")) {
+                LabeledContent(L("On this iPhone", "Auf diesem iPhone"), value: formattedBytes(usage.downloadedModelBytes))
+                LabeledContent(L("Can be removed", "Löschbar"), value: formattedBytes(usage.removableModelBytes))
+                Text(L("Your active model, \(activeModelTitle), stays on this iPhone.", "Dein aktives Modell, \(activeModelTitle), bleibt auf diesem iPhone."))
+                    .font(.footnote).foregroundStyle(KlangColor.secondary)
+                Button(L("Delete downloaded models", "Heruntergeladene Modelle löschen"), role: .destructive) { confirmingModels = true }
+                    .disabled(actionsDisabled || usage.removableModelBytes == 0)
+            }.listRowBackground(Color(uiColor: KlangPalette.surface))
+
+            Section(L("Caches", "Zwischenspeicher")) {
+                LabeledContent(L("Can be removed", "Löschbar"), value: formattedBytes(usage.cacheAndTemporaryBytes))
+                Text(L("This clears Klangschrift compiler, Metal, and temporary caches.", "Dies löscht Klangschrift-Compiler-, Metal- und temporäre Caches."))
+                    .font(.footnote).foregroundStyle(KlangColor.secondary)
+                Button(L("Clear caches", "Zwischenspeicher leeren"), role: .destructive) { confirmingCaches = true }
+                    .disabled(actionsDisabled || usage.cacheAndTemporaryBytes == 0)
+            }.listRowBackground(Color(uiColor: KlangPalette.surface))
+
+            if viewModel.isMaintainingStorage {
+                Section { HStack { ProgressView(); Text(L("Cleaning storage …", "Speicher wird bereinigt …")) } }
+                    .listRowBackground(Color(uiColor: KlangPalette.surface))
+            } else if !viewModel.canMaintainStorage {
+                Section {
+                    Text(L("Finish the current dictation, model task, download, or keyboard task before changing storage.", "Beende zuerst das aktuelle Diktat, den Modellvorgang, Download oder Tastaturvorgang, bevor du Speicher änderst."))
+                        .font(.footnote).foregroundStyle(KlangColor.secondary)
+                }.listRowBackground(Color(uiColor: KlangPalette.surface))
+            }
+        }
+        .scrollContentBackground(.hidden).background(KlangColor.canvas)
+        .navigationTitle(L("Storage & data", "Speicher & Daten"))
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear { viewModel.refreshStorageUsage() }
+        .confirmationDialog(L("Delete all history?", "Gesamten Verlauf löschen?"), isPresented: $confirmingHistory, titleVisibility: .visible) {
+            Button(L("Delete all history", "Gesamten Verlauf löschen"), role: .destructive) { viewModel.clearAllHistory() }
+            Button(L("Cancel", "Abbrechen"), role: .cancel) {}
+        } message: {
+            Text(L("This removes your saved dictations. Your dictionary and settings remain.", "Dies entfernt deine gespeicherten Diktate. Wörterbuch und Einstellungen bleiben erhalten."))
+        }
+        .confirmationDialog(L("Delete downloaded models?", "Heruntergeladene Modelle löschen?"), isPresented: $confirmingModels, titleVisibility: .visible) {
+            Button(L("Delete downloaded models", "Heruntergeladene Modelle löschen"), role: .destructive) { viewModel.removeDownloadedModels() }
+            Button(L("Cancel", "Abbrechen"), role: .cancel) {}
+        } message: {
+            Text(L("The active model, \(activeModelTitle), stays installed. You can download other models again later.", "Das aktive Modell, \(activeModelTitle), bleibt installiert. Andere Modelle kannst du später erneut laden."))
+        }
+        .confirmationDialog(L("Clear caches?", "Zwischenspeicher leeren?"), isPresented: $confirmingCaches, titleVisibility: .visible) {
+            Button(L("Clear caches", "Zwischenspeicher leeren"), role: .destructive) { viewModel.clearCachesAndTemporary() }
+            Button(L("Cancel", "Abbrechen"), role: .cancel) {}
+        } message: {
+            Text(L("Only Klangschrift compiler, Metal, and temporary caches are removed.", "Es werden nur Klangschrift-Compiler-, Metal- und temporäre Caches entfernt."))
+        }
+    }
 }
 
 private struct ModelManagementView: View {

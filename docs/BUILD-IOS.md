@@ -14,11 +14,16 @@ Der folgende unsignierte Release-Bau wurde mit zwei Jobs geprüft. Er verwendet 
 cd ios
 /usr/bin/lockf -k /tmp/ks-ios-build.lock xcodebuild \
   -project KlangschriftIOS.xcodeproj -target Klangschrift -configuration Release -sdk iphoneos \
-  -clonedSourcePackagesDirPath /private/tmp/klangschrift-ios-packages \
+  -clonedSourcePackagesDirPath /private/tmp/klangschrift-public-ios-packages \
   -onlyUsePackageVersionsFromResolvedFile -disableAutomaticPackageResolution \
   CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' \
-  COMPILER_INDEX_STORE_ENABLE=NO -jobs 2 build
+  COMPILER_INDEX_STORE_ENABLE=NO \
+  SYMROOT=/private/tmp/klangschrift-public-ios-build \
+  OBJROOT=/private/tmp/klangschrift-public-ios-obj \
+  -jobs 2 build
 ```
+
+`SYMROOT` und `OBJROOT` müssen für alle Paketmodule gemeinsame Build-Ordner sein; sonst kann ein Paketmodul die Erzeugnisse eines anderen Release-Moduls nicht finden.
 
 Für ein eigenes Gerät:
 

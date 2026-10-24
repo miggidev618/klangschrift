@@ -1,6 +1,7 @@
 .DS_Store
 .metadata_never_index
 .build/
+**/build/
 DerivedData/
 ModelArtifacts/
 macos/Vendor/DesktopSDKs/Moonshine/Moonshine.xcframework/

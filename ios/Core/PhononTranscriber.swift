@@ -157,6 +157,14 @@ public actor LocalTranscriptionService {
     public func residentModels() -> Set<DictationModelID> { Set(residents.keys) }
     func pendingDemandModels() -> Set<DictationModelID> { Set(activeDemands.values) }
 
+    /// Storage maintenance may evict only a fully idle cache. Callers must not
+    /// remove model or cache files while a resident is demanded, pinned, or active.
+    public func releaseResidentsForStorageMaintenance() -> Bool {
+        guard activeModelID == nil, activeDemands.isEmpty, pins.isEmpty else { return false }
+        residents.removeAll(); recent.removeAll()
+        return true
+    }
+
     /// Actor reentrancy may deliver this during an awaited job. Its provider is pinned.
     public func handleMemoryPressure() {
         for id in Array(residents.keys) where id != activeModelID && !pins.values.contains(id) && !activeDemands.values.contains(id) && residents[id]?.autoPermit?.hasDemand(for: id) != true { residents[id] = nil; recent.removeAll { $0 == id } }

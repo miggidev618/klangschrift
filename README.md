@@ -7,12 +7,13 @@ Lokales Diktieren für Mac und iPhone. Klangschrift verarbeitet Aufnahmen auf de
 | Plattform | Version | Bereitstellung |
 | --- | --- | --- |
 | Mac | 1.0 (Build 59) | Selbstbau aus diesem Quellcode |
-| iPhone | 1.0.1 (Build 29) | Selbstbau in Xcode auf dem eigenen Gerät |
+| iPhone | 1.0.2 (Build 30) | Selbstbau in Xcode auf dem eigenen Gerät |
 
 ## Funktionen
 
 - **Mac:** Sprechtaste und verschiebbare Pille, Verlauf mit Kalender, Bearbeiten und Kopieren sowie eigene Wörter und Ersetzungen.
 - **iPhone:** kompakte Diktattastatur, Rückkehr zur vorherigen App, Wischhinweis an der unteren Gestenzone sowie Verlauf und eigene Schreibweisen.
+- **Speicher & Daten:** iPhone-Verlauf, nicht aktive heruntergeladene Modelle und Klangschrift-Zwischenspeicher lassen sich im Leerlauf gezielt bereinigen.
 - **Lokal:** Diktate bleiben auf dem Gerät. Die Wirkung eigener Wörter hängt vom gewählten Modell ab und ist nicht garantiert.
 
 ## Ein Blick in die Mac-App

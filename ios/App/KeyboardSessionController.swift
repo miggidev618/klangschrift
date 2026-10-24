@@ -49,6 +49,9 @@ final class KeyboardSessionController: ObservableObject {
     }
 
     var onModelDemand: (Set<DictationModelID>) -> (() -> Void) = { _ in {} }
+    /// Set by the host while it owns the storage-maintenance critical section.
+    /// A handoff received in that window must not start a fresh model worker.
+    var storageMaintenanceActive: () -> Bool = { false }
 
     func favoritesChanged() {
         guard !recording, !starting, processingID == nil else { return }
@@ -101,6 +104,7 @@ final class KeyboardSessionController: ObservableObject {
     }
 
     func activate(handoff: KeyboardHandoff? = nil) async {
+        guard !storageMaintenanceActive() else { return }
         guard let bridge = KeyboardBridgeStore() else { error = KeyboardBridgeError.unavailable.localizedDescription; return }
         var activationGeneration: Int?
         do {

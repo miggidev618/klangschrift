@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.0.2 — 25. Oktober 2026
+
+- iPhone: Bereich „Speicher & Daten“ für Verlauf, heruntergeladene Modelle und Klangschrift-Zwischenspeicher.
+- Bereinigung ist nur im Leerlauf möglich; das aktive Modell bleibt erhalten.
+
 ## 1.0 / 1.0.1 — 24. Oktober 2026
 
 Erste veröffentlichte Quellversion für Mac und iPhone.
