@@ -1,0 +1,601 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 71;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* KlangschriftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* KlangschriftApp.swift */; };
+		A10000000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* ContentView.swift */; };
+		A10000000000000000000003 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* AudioRecorder.swift */; };
+		A10000000000000000000004 /* PhononTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* PhononTranscriber.swift */; };
+		A10000000000000000000005 /* MLXAudioSTT in Frameworks */ = {isa = PBXBuildFile; productRef = A50000000000000000000001 /* MLXAudioSTT */; };
+		A10000000000000000000006 /* MLXAudioCore in Frameworks */ = {isa = PBXBuildFile; productRef = A50000000000000000000002 /* MLXAudioCore */; };
+		A10000000000000000000008 /* RecordingPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* RecordingPolicy.swift */; };
+		A10000000000000000000009 /* RecordingLifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* RecordingLifecycle.swift */; };
+		A10000000000000000000010 /* TranscriptLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* TranscriptLibrary.swift */; };
+		A10000000000000000000011 /* KeyboardSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011 /* KeyboardSessionProtocol.swift */; };
+		A10000000000000000000012 /* KeyboardBridgeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* KeyboardBridgeStore.swift */; };
+		A10000000000000000000013 /* KeyboardSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000013 /* KeyboardSessionController.swift */; };
+		A10000000000000000000014 /* SessionAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000014 /* SessionAudioRecorder.swift */; };
+		A10000000000000000000015 /* DictationIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000015 /* DictationIntent.swift */; };
+		A10000000000000000000020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000020 /* Assets.xcassets */; };
+		A10000000000000000000021 /* DictationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000021 /* DictationModel.swift */; };
+		A10000000000000000000024 /* FluidAudio in Frameworks */ = {isa = PBXBuildFile; productRef = A50000000000000000000004 /* FluidAudio */; };
+		A10000000000000000000025 /* MoonshineVoice in Frameworks */ = {isa = PBXBuildFile; productRef = A50000000000000000000007 /* MoonshineVoice */; };
+		A10000000000000000000018 /* KlangschriftKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A20000000000000000000018 /* KlangschriftKeyboard.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B10000000000000000000012 /* KeyboardBridgeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* KeyboardBridgeStore.swift */; };
+		B10000000000000000000016 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000016 /* KeyboardViewController.swift */; };
+A10000000000000000000030 /* DictationModelInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000030; };
+A10000000000000000000031 /* DictationModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000031; };
+A10000000000000000000032 /* DictationPerformanceStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000032; };
+A10000000000000000000033 /* MoonshineLocalTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000033; };
+A10000000000000000000034 /* DictationExpandedModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000034; };
+A10000000000000000000035 /* DictationWhisperModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000035; };
+A10000000000000000000036 /* WhisperLocalTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000036; };
+A10000000000000000000037 /* WhisperKit in Frameworks */ = {isa = PBXBuildFile; productRef = A50000000000000000000009; };
+A10000000000000000000038 /* DictationSherpaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000038; };
+A10000000000000000000039 /* SherpaLocalTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000039; };
+A10000000000000000000040 /* SherpaOnnxC in Frameworks */ = {isa = PBXBuildFile; productRef = A50000000000000000000011; };
+A10000000000000000000041 /* Licenses in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000041; };
+A10000000000000000000042 /* SessionCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000042; };
+B10000000000000000000017 /* MeasuredWaveform.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000043; };
+A10000000000000000000044 /* KeyboardModelFavorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000044; };
+B10000000000000000000018 /* KeyboardModelFavorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000044; };
+A10000000000000000000046 /* KlangPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000046; };
+B10000000000000000000020 /* KlangPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000046; };
+B10000000000000000000021 /* KeyboardRecordingCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000021; };
+A10000000000000000000047 /* MainDictationStartPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000047; };
+A10000000000000000000048 /* ModelLoadControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000048; };
+A10000000000000000000049 /* ForegroundModelPreloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000049; };
+A10000000000000000000050 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000050 /* AppLanguage.swift */; };
+B10000000000000000000050 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000050 /* AppLanguage.swift */; };
+A10000000000000000000051 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A40000000000000000000051 /* InfoPlist.strings */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B20000000000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B60000000000000000000001;
+			remoteInfo = KlangschriftKeyboard;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A80000000000000000000003 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A10000000000000000000018 /* KlangschriftKeyboard.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A20000000000000000000001 /* KlangschriftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KlangschriftApp.swift; sourceTree = "<group>"; };
+		A20000000000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A20000000000000000000003 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
+		A20000000000000000000004 /* PhononTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhononTranscriber.swift; sourceTree = "<group>"; };
+		A20000000000000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20000000000000000000006 /* Klangschrift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Klangschrift.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000008 /* RecordingPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingPolicy.swift; sourceTree = "<group>"; };
+		A20000000000000000000009 /* RecordingLifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingLifecycle.swift; sourceTree = "<group>"; };
+		A20000000000000000000010 /* TranscriptLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptLibrary.swift; sourceTree = "<group>"; };
+		A20000000000000000000011 /* KeyboardSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardSessionProtocol.swift; sourceTree = "<group>"; };
+		A20000000000000000000012 /* KeyboardBridgeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardBridgeStore.swift; sourceTree = "<group>"; };
+		A20000000000000000000013 /* KeyboardSessionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardSessionController.swift; sourceTree = "<group>"; };
+		A20000000000000000000014 /* SessionAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionAudioRecorder.swift; sourceTree = "<group>"; };
+		A20000000000000000000015 /* DictationIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictationIntent.swift; sourceTree = "<group>"; };
+		A20000000000000000000016 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
+		A20000000000000000000017 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20000000000000000000018 /* KlangschriftKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = KlangschriftKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000019 /* Keyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Keyboard.entitlements; sourceTree = "<group>"; };
+		A20000000000000000000020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A20000000000000000000021 /* DictationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictationModel.swift; sourceTree = "<group>"; };
+A20000000000000000000030 /* DictationModelInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictationModelInstaller.swift; sourceTree = "<group>"; };
+A20000000000000000000031 /* DictationModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictationModelCatalog.swift; sourceTree = "<group>"; };
+A20000000000000000000032 /* DictationPerformanceStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictationPerformanceStats.swift; sourceTree = "<group>"; };
+A20000000000000000000033 /* MoonshineLocalTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonshineLocalTranscriber.swift; sourceTree = "<group>"; };
+A20000000000000000000034 /* DictationExpandedModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictationExpandedModels.swift; sourceTree = "<group>"; };
+A20000000000000000000035 /* DictationWhisperModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictationWhisperModels.swift; sourceTree = "<group>"; };
+A20000000000000000000036 /* WhisperLocalTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhisperLocalTranscriber.swift; sourceTree = "<group>"; };
+A20000000000000000000038 /* DictationSherpaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictationSherpaModel.swift; sourceTree = "<group>"; };
+A20000000000000000000039 /* SherpaLocalTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SherpaLocalTranscriber.swift; sourceTree = "<group>"; };
+A20000000000000000000041 /* Licenses */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Licenses; sourceTree = SOURCE_ROOT; };
+A20000000000000000000042 /* SessionCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCapture.swift; sourceTree = "<group>"; };
+A20000000000000000000043 /* MeasuredWaveform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuredWaveform.swift; sourceTree = "<group>"; };
+A20000000000000000000044 /* KeyboardModelFavorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardModelFavorites.swift; sourceTree = "<group>"; };
+A20000000000000000000046 /* KlangPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KlangPalette.swift; sourceTree = "<group>"; };
+B20000000000000000000021 /* KeyboardRecordingCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard/KeyboardRecordingCenter.swift; sourceTree = SOURCE_ROOT; };
+A20000000000000000000047 /* MainDictationStartPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainDictationStartPolicy.swift; sourceTree = "<group>"; };
+A20000000000000000000048 /* ModelLoadControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoadControl.swift; sourceTree = "<group>"; };
+A20000000000000000000049 /* ForegroundModelPreloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForegroundModelPreloader.swift; sourceTree = "<group>"; };
+A20000000000000000000050 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
+A20000000000000000000051 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+A20000000000000000000052 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A30000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000005 /* MLXAudioSTT in Frameworks */,
+				A10000000000000000000006 /* MLXAudioCore in Frameworks */,
+				A10000000000000000000024 /* FluidAudio in Frameworks */,
+				A10000000000000000000025 /* MoonshineVoice in Frameworks */,
+ A10000000000000000000040 /* SherpaOnnxC in Frameworks */,
+ A10000000000000000000037 /* WhisperKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B30000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A40000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A40000000000000000000002 /* App */,
+				A40000000000000000000003 /* Core */,
+				A40000000000000000000005 /* Keyboard */,
+ A20000000000000000000041 /* Licenses */,
+				A40000000000000000000004 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A40000000000000000000002 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000001 /* KlangschriftApp.swift */,
+				A20000000000000000000002 /* ContentView.swift */,
+				A20000000000000000000005 /* Info.plist */,
+                A40000000000000000000051 /* InfoPlist.strings */,
+				A20000000000000000000013 /* KeyboardSessionController.swift */,
+				A20000000000000000000014 /* SessionAudioRecorder.swift */,
+				A20000000000000000000015 /* DictationIntent.swift */,
+				A20000000000000000000019 /* Keyboard.entitlements */,
+				A20000000000000000000020 /* Assets.xcassets */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A40000000000000000000003 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000050 /* AppLanguage.swift */,
+                A20000000000000000000003 /* AudioRecorder.swift */,
+ A20000000000000000000042 /* SessionCapture.swift */,
+ A20000000000000000000043 /* MeasuredWaveform.swift */,
+ A20000000000000000000044 /* KeyboardModelFavorites.swift */,
+ A20000000000000000000046 /* KlangPalette.swift */,
+ A20000000000000000000048 /* ModelLoadControl.swift */,
+ A20000000000000000000049 /* ForegroundModelPreloader.swift */,
+ A20000000000000000000047 /* MainDictationStartPolicy.swift */,
+ B20000000000000000000021 /* KeyboardRecordingCenter.swift */,
+				A20000000000000000000004 /* PhononTranscriber.swift */,
+				A20000000000000000000008 /* RecordingPolicy.swift */,
+				A20000000000000000000009 /* RecordingLifecycle.swift */,
+				A20000000000000000000010 /* TranscriptLibrary.swift */,
+				A20000000000000000000011 /* KeyboardSessionProtocol.swift */,
+				A20000000000000000000012 /* KeyboardBridgeStore.swift */,
+				A20000000000000000000021 /* DictationModel.swift */,
+ A20000000000000000000039 /* SherpaLocalTranscriber.swift */,
+ A20000000000000000000038 /* DictationSherpaModel.swift */,
+ A20000000000000000000036 /* WhisperLocalTranscriber.swift */,
+ A20000000000000000000035 /* DictationWhisperModels.swift */,
+ A20000000000000000000034 /* DictationExpandedModels.swift */,
+ A20000000000000000000033 /* MoonshineLocalTranscriber.swift */,
+ A20000000000000000000032 /* DictationPerformanceStats.swift */,
+ A20000000000000000000031 /* DictationModelCatalog.swift */,
+ A20000000000000000000030 /* DictationModelInstaller.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		A40000000000000000000004 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000006 /* Klangschrift.app */,
+				A20000000000000000000018 /* KlangschriftKeyboard.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A40000000000000000000005 /* Keyboard */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000016 /* KeyboardViewController.swift */,
+				A20000000000000000000017 /* Info.plist */,
+			);
+			path = Keyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A60000000000000000000001 /* Klangschrift */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A70000000000000000000001 /* Build configuration list for PBXNativeTarget "Klangschrift" */;
+			buildPhases = (
+				A80000000000000000000001 /* Sources */,
+				A30000000000000000000001 /* Frameworks */,
+				A80000000000000000000002 /* Resources */,
+				A80000000000000000000003 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B40000000000000000000001 /* PBXTargetDependency */,
+			);
+			name = Klangschrift;
+			packageProductDependencies = (
+				A50000000000000000000001 /* MLXAudioSTT */,
+				A50000000000000000000002 /* MLXAudioCore */,
+				A50000000000000000000004 /* FluidAudio */,
+				A50000000000000000000007 /* MoonshineVoice */,
+ A50000000000000000000011 /* SherpaOnnxC */,
+ A50000000000000000000009 /* WhisperKit */,
+			);
+			productName = Klangschrift;
+			productReference = A20000000000000000000006 /* Klangschrift.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B60000000000000000000001 /* KlangschriftKeyboard */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B70000000000000000000001 /* Build configuration list for PBXNativeTarget "KlangschriftKeyboard" */;
+			buildPhases = (
+				B80000000000000000000001 /* Sources */,
+				B30000000000000000000001 /* Frameworks */,
+				B80000000000000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = KlangschriftKeyboard;
+			productName = KlangschriftKeyboard;
+			productReference = A20000000000000000000018 /* KlangschriftKeyboard.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A90000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					A60000000000000000000001 = {
+						CreatedOnToolsVersion = 27.0;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
+					};
+					B60000000000000000000001 = {
+						CreatedOnToolsVersion = 27.0;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = A70000000000000000000002 /* Build configuration list for PBXProject "KlangschriftIOS" */;
+			compatibilityVersion = "Xcode 16.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				de,
+				en,
+				Base,
+			);
+			mainGroup = A40000000000000000000001;
+			packageReferences = (
+				A50000000000000000000003 /* XCLocalSwiftPackageReference "Vendor/mlx-audio-swift" */,
+				A50000000000000000000005 /* XCLocalSwiftPackageReference "Vendor/FluidAudio" */,
+				A50000000000000000000006 /* XCLocalSwiftPackageReference "Vendor/Moonshine" */,
+ A50000000000000000000010 /* XCLocalSwiftPackageReference "Vendor/Sherpa" */,
+ A50000000000000000000008 /* XCLocalSwiftPackageReference "Vendor/WhisperKit" */,
+			);
+			productRefGroup = A40000000000000000000004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A60000000000000000000001 /* Klangschrift */,
+				B60000000000000000000001 /* KlangschriftKeyboard */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXVariantGroup section */
+        A40000000000000000000051 /* InfoPlist.strings */ = {
+            isa = PBXVariantGroup;
+            children = (
+                A20000000000000000000051 /* en */,
+                A20000000000000000000052 /* de */,
+            );
+            name = InfoPlist.strings;
+            sourceTree = "<group>";
+        };
+/* End PBXVariantGroup section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A80000000000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+ A10000000000000000000041 /* Licenses in Resources */,
+				A10000000000000000000020 /* Assets.xcassets in Resources */,
+                A10000000000000000000051 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B80000000000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A80000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000050 /* AppLanguage.swift in Sources */,
+                A10000000000000000000001 /* KlangschriftApp.swift in Sources */,
+				A10000000000000000000002 /* ContentView.swift in Sources */,
+				A10000000000000000000003 /* AudioRecorder.swift in Sources */,
+ A10000000000000000000042 /* SessionCapture.swift in Sources */,
+ A10000000000000000000044 /* KeyboardModelFavorites.swift in Sources */,
+ A10000000000000000000046 /* KlangPalette.swift in Sources */,
+ A10000000000000000000048 /* ModelLoadControl.swift in Sources */,
+ A10000000000000000000049 /* ForegroundModelPreloader.swift in Sources */,
+ A10000000000000000000047 /* MainDictationStartPolicy.swift in Sources */,
+				A10000000000000000000004 /* PhononTranscriber.swift in Sources */,
+				A10000000000000000000021 /* DictationModel.swift in Sources */,
+ A10000000000000000000039 /* SherpaLocalTranscriber.swift in Sources */,
+ A10000000000000000000038 /* DictationSherpaModel.swift in Sources */,
+ A10000000000000000000036 /* WhisperLocalTranscriber.swift in Sources */,
+ A10000000000000000000035 /* DictationWhisperModels.swift in Sources */,
+ A10000000000000000000034 /* DictationExpandedModels.swift in Sources */,
+ A10000000000000000000033 /* MoonshineLocalTranscriber.swift in Sources */,
+ A10000000000000000000032 /* DictationPerformanceStats.swift in Sources */,
+ A10000000000000000000031 /* DictationModelCatalog.swift in Sources */,
+ A10000000000000000000030 /* DictationModelInstaller.swift in Sources */,
+				A10000000000000000000008 /* RecordingPolicy.swift in Sources */,
+				A10000000000000000000009 /* RecordingLifecycle.swift in Sources */,
+				A10000000000000000000010 /* TranscriptLibrary.swift in Sources */,
+				A10000000000000000000011 /* KeyboardSessionProtocol.swift in Sources */,
+				A10000000000000000000012 /* KeyboardBridgeStore.swift in Sources */,
+				A10000000000000000000013 /* KeyboardSessionController.swift in Sources */,
+				A10000000000000000000014 /* SessionAudioRecorder.swift in Sources */,
+				A10000000000000000000015 /* DictationIntent.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B80000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B10000000000000000000050 /* AppLanguage.swift in Sources */,
+                B10000000000000000000012 /* KeyboardBridgeStore.swift in Sources */,
+				B10000000000000000000016 /* KeyboardViewController.swift in Sources */,
+ B10000000000000000000017 /* MeasuredWaveform.swift in Sources */,
+ B10000000000000000000018 /* KeyboardModelFavorites.swift in Sources */,
+ B10000000000000000000020 /* KlangPalette.swift in Sources */,
+ B10000000000000000000021 /* KeyboardRecordingCenter.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B40000000000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B60000000000000000000001 /* KlangschriftKeyboard */;
+			targetProxy = B20000000000000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		AA00000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CURRENT_PROJECT_VERSION = 29;
+				CODE_SIGN_ENTITLEMENTS = App/Keyboard.entitlements;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.miggidev618.klangschrift;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AA00000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CURRENT_PROJECT_VERSION = 29;
+				CODE_SIGN_ENTITLEMENTS = App/Keyboard.entitlements;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.miggidev618.klangschrift;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		AA00000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+			};
+			name = Debug;
+		};
+		AA00000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+			};
+			name = Release;
+		};
+		BA0000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CURRENT_PROJECT_VERSION = 29;
+				CODE_SIGN_ENTITLEMENTS = App/Keyboard.entitlements;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = Keyboard/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.miggidev618.klangschrift.keyboard;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		BA0000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CURRENT_PROJECT_VERSION = 29;
+				CODE_SIGN_ENTITLEMENTS = App/Keyboard.entitlements;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = Keyboard/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.miggidev618.klangschrift.keyboard;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A70000000000000000000001 /* Build configuration list for PBXNativeTarget "Klangschrift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA00000000000000000000001 /* Debug */,
+				AA00000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A70000000000000000000002 /* Build configuration list for PBXProject "KlangschriftIOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA00000000000000000000003 /* Debug */,
+				AA00000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B70000000000000000000001 /* Build configuration list for PBXNativeTarget "KlangschriftKeyboard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BA0000000000000000000001 /* Debug */,
+				BA0000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		A50000000000000000000003 /* XCLocalSwiftPackageReference "Vendor/mlx-audio-swift" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "Vendor/mlx-audio-swift";
+		};
+		A50000000000000000000005 /* XCLocalSwiftPackageReference "Vendor/FluidAudio" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "Vendor/FluidAudio";
+		};
+		A50000000000000000000006 /* XCLocalSwiftPackageReference "Vendor/Moonshine" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "Vendor/Moonshine";
+		};
+A50000000000000000000008 /* XCLocalSwiftPackageReference "Vendor/WhisperKit" */ = {isa = XCLocalSwiftPackageReference; relativePath = "Vendor/WhisperKit"; };
+A50000000000000000000010 /* XCLocalSwiftPackageReference "Vendor/Sherpa" */ = {isa = XCLocalSwiftPackageReference; relativePath = "Vendor/Sherpa"; };
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A50000000000000000000001 /* MLXAudioSTT */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A50000000000000000000003 /* XCLocalSwiftPackageReference "Vendor/mlx-audio-swift" */;
+			productName = MLXAudioSTT;
+		};
+		A50000000000000000000002 /* MLXAudioCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A50000000000000000000003 /* XCLocalSwiftPackageReference "Vendor/mlx-audio-swift" */;
+			productName = MLXAudioCore;
+		};
+		A50000000000000000000004 /* FluidAudio */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A50000000000000000000005 /* XCLocalSwiftPackageReference "Vendor/FluidAudio" */;
+			productName = FluidAudio;
+		};
+		A50000000000000000000007 /* MoonshineVoice */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A50000000000000000000006 /* XCLocalSwiftPackageReference "Vendor/Moonshine" */;
+			productName = MoonshineVoice;
+		};
+A50000000000000000000009 /* WhisperKit */ = {isa = XCSwiftPackageProductDependency; package = A50000000000000000000008; productName = WhisperKit; };
+A50000000000000000000011 /* SherpaOnnxC */ = {isa = XCSwiftPackageProductDependency; package = A50000000000000000000010; productName = SherpaOnnxC; };
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = A90000000000000000000001 /* Project object */;
+}

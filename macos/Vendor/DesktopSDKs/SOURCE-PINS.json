@@ -1,0 +1,22 @@
+[
+  {
+    "sdk": "FluidAudio",
+    "source_git_head": "0b1f46289fe27d95b5e66ad8be46e64f5ee02ae7",
+    "source_package_swift_sha256": "d0edb0fe34309e8780139fd9f4b0453a4897f6c1282f4caaa73761424f21f90d"
+  },
+  {
+    "sdk": "Moonshine",
+    "source_git_head": "45a14f9edf1f2a6913d3aff38c1fd4e72d5b7daa",
+    "source_package_swift_sha256": "ce0e4b30d292b93dd89cef6560df9fabae4b52f218e89cfa0ed616c52856ac70"
+  },
+  {
+    "sdk": "WhisperKit",
+    "source_git_head": "1e2a163736dfa5a198e637ae44c114e1c6d5cc2d",
+    "source_package_swift_sha256": "bc0c8a1939fb7274ecb0b3db1909ab6b93235b4d161355f702fe9d2ca2b5d553"
+  },
+  {
+    "sdk": "Sherpa",
+    "source_git_head": "3e4c19e65013fbecb28c631ca9a74f8edb0cb0b1",
+    "source_package_swift_sha256": "8787ae8aaab09bfdfef8ee48820d0992981bb87033206335b6024c48dcf4e7b2"
+  }
+]

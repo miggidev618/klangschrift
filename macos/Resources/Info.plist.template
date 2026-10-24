@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>CFBundleIdentifier</key><string>io.github.miggidev618.klangschrift</string>
+  <key>CFBundleDisplayName</key><string>Klangschrift</string>
+  <key>CFBundleExecutable</key><string>Klangschrift</string>
+  <key>CFBundleIconFile</key><string>Klangschrift.icns</string>
+  <key>CFBundlePackageType</key><string>APPL</string>
+  <key>CFBundleShortVersionString</key><string>1.0</string>
+  <key>CFBundleVersion</key><string>59</string>
+  <key>LSMinimumSystemVersion</key><string>26.0</string>
+  <key>NSPrincipalClass</key><string>NSApplication</string>
+  <key>NSMicrophoneUsageDescription</key><string>Klangschrift verwendet das Mikrofon nur während einer von dir gestarteten Aufnahme.</string>
+  <key>NSAccessibilityUsageDescription</key><string>Klangschrift benötigt Bedienungshilfen, um bestätigten Text am aktuellen Cursor einzufügen.</string>
+</dict></plist>

@@ -1,0 +1,264 @@
+diff --git a/Package.swift b/Package.swift
+index a3e68f6..e742f08 100644
+--- a/Package.swift
++++ b/Package.swift
+@@ -60,7 +60,7 @@ let package = Package(
+ 
+     ],
+     dependencies: [
+-        .package(url: "https://github.com/ml-explore/mlx-swift.git", .upToNextMajor(from: "0.30.6")),
++        .package(path: "../mlx-swift"),
+         .package(url: "https://github.com/ml-explore/mlx-swift-lm.git", .upToNextMajor(from: "3.31.3")),
+         .package(url: "https://github.com/huggingface/swift-transformers.git", .upToNextMajor(from: "1.1.6")),
+         .package(url: "https://github.com/huggingface/swift-huggingface.git", .upToNextMajor(from: "0.8.1"))
+@@ -155,7 +155,11 @@ let package = Package(
+                 "Models/SenseVoice/README.md",
+                 "Models/VoxtralRealtime/README.md",
+                 "Models/Whisper/README.md",
+-            ]
++            ],
++            // Xcode 27 diagnoses MLX graph captures under complete Swift 6
++            // checking although the upstream MLX arrays/modules are not Sendable.
++            // These closures execute inside MLX's synchronous graph compiler.
++            swiftSettings: [.unsafeFlags(["-Xfrontend", "-strict-concurrency=minimal"])]
+         ),
+ 
+         // MARK: - MLXAudioVAD
+diff --git a/Sources/MLXAudioSTT/Models/Parakeet/ParakeetModel.swift b/Sources/MLXAudioSTT/Models/Parakeet/ParakeetModel.swift
+index e6fee8d..ef8c50e 100644
+--- a/Sources/MLXAudioSTT/Models/Parakeet/ParakeetModel.swift
++++ b/Sources/MLXAudioSTT/Models/Parakeet/ParakeetModel.swift
+@@ -53,7 +53,9 @@ public final class ParakeetModel: Module, STTGenerationModel {
+     var tdtDecoderImplementation: TDTDecoderImplementation?
+     var encoderExecutionImplementation: EncoderExecutionImplementation?
+     var tdtTraceEmitter: (@Sendable (TDTTraceStep) -> Void)?
+-    private var compiledEncoderFeaturesByShape: [String: @Sendable (MLXArray) -> MLXArray] = [:]
++    // Xcode 27's complete Sendable checking rejects MLX module captures inside
++    // `compile`. Keep the same graph result on the synchronous plain path.
++    private var compiledEncoderFeaturesByShape: [String: (MLXArray) -> MLXArray] = [:]
+ 
+     public var defaultGenerationParameters: STTGenerateParameters {
+         STTGenerateParameters(
+@@ -316,13 +318,13 @@ public final class ParakeetModel: Module, STTGenerationModel {
+         }
+     }
+ 
+-    func compiledEncoderFeatures(for features: MLXArray) -> @Sendable (MLXArray) -> MLXArray {
++    func compiledEncoderFeatures(for features: MLXArray) -> (MLXArray) -> MLXArray {
+         let key = "\(features.shape)-\(features.dtype)"
+         if let compiled = compiledEncoderFeaturesByShape[key] {
+             return compiled
+         }
+ 
+-        let compiled: @Sendable (MLXArray) -> MLXArray = compile { [self] features in
++        let compiled: (MLXArray) -> MLXArray = { [self] features in
+             self.encoder(features).0
+         }
+         compiledEncoderFeaturesByShape[key] = compiled
+@@ -895,7 +897,7 @@ private func makeCompiledTDTStep(
+     decoder: ParakeetPredictNetwork?,
+     joint: ParakeetJointNetwork?,
+     blankTokenId: Int
+-) -> @Sendable ([MLXArray]) -> [MLXArray] {
++) -> ([MLXArray]) -> [MLXArray] {
+     guard let decoder, let joint else {
+         return { arrays in
+             [MLXArray([Int32(0), Int32(0)]), arrays[2], arrays[3]]
+@@ -904,7 +906,7 @@ private func makeCompiledTDTStep(
+ 
+     let blankTokenArray = MLXArray(Int32(blankTokenId)).reshaped([1, 1])
+ 
+-    return compile { arrays in
++    return { arrays in
+         let feature = arrays[0]
+         let currentToken = arrays[1]
+         let hidden = arrays[2]
+@@ -943,7 +945,9 @@ public extension ParakeetModel {
+         return Data(text.utf8)
+     }
+ 
+-    static func fromDirectory(
++    /// Loads an already present model directory. Callers supply the directory;
++    /// this performs no Hub lookup or network request.
++    public static func fromDirectory(
+         _ modelDir: URL,
+         computeDType: DType = .bfloat16
+     ) throws -> ParakeetModel {
+@@ -1029,7 +1033,12 @@ public extension ParakeetModel {
+             }
+         }
+ 
+-        try model.update(parameters: ModuleParameters.unflattened(sanitized), verify: .all)
++        let packedPhonon = sanitized.keys.contains { $0.hasSuffix(".base_q") }
++        if packedPhonon {
++            try loadPackedPhonon(model: model, weights: sanitized)
++        } else {
++            try model.update(parameters: ModuleParameters.unflattened(sanitized), verify: .all)
++        }
+ 
+         model.computeDType = computeDType
+ 
+@@ -1038,7 +1047,8 @@ public extension ParakeetModel {
+         // packed quantized) weights untouched.
+         let casted = Dictionary(
+             uniqueKeysWithValues: model.parameters().flattened().map { key, value -> (String, MLXArray) in
+-                guard value.dtype.isFloatingPoint, value.dtype != computeDType else {
++                guard value.dtype.isFloatingPoint, value.dtype != computeDType,
++                      !key.hasSuffix(".row_lo"), !key.hasSuffix(".row_delta") else {
+                     return (key, value)
+                 }
+                 return (key, value.asType(computeDType))
+@@ -1200,4 +1210,3 @@ private extension Array {
+         return self[index]
+     }
+ }
+-
+diff --git a/Sources/MLXAudioSTT/Models/Parakeet/PackedPhonon.swift b/Sources/MLXAudioSTT/Models/Parakeet/PackedPhonon.swift
+new file mode 100644
+index 0000000..817bc58
+--- /dev/null
++++ b/Sources/MLXAudioSTT/Models/Parakeet/PackedPhonon.swift
+@@ -0,0 +1,143 @@
++import Foundation
++import MLX
++import MLXNN
++
++/// Exact execution of one Phonon five-value matrix using two native MLX 2-bit
++/// affine QMMs. The inherited zero-sized `weight` is never used; it merely
++/// satisfies the upstream `Linear` storage contract after the dense module is
++/// replaced. No full dense matrix is retained in the final module tree.
++final class PackedFiveValueLinear: Linear {
++    @ParameterInfo(key: "base_q") var baseQ: MLXArray
++    @ParameterInfo(key: "residual_q") var residualQ: MLXArray
++    @ParameterInfo(key: "row_lo") var rowLo: MLXArray
++    @ParameterInfo(key: "row_delta") var rowDelta: MLXArray
++    let inputFeatures: Int
++    let outputFeatures: Int
++
++    init(baseQ: MLXArray, residualQ: MLXArray, rowLo: MLXArray, rowDelta: MLXArray, inputFeatures: Int, outputFeatures: Int, bias: MLXArray?) {
++        precondition(inputFeatures % 128 == 0 && inputFeatures % 16 == 0)
++        precondition(baseQ.shape == [outputFeatures, inputFeatures / 16])
++        precondition(residualQ.shape == [outputFeatures, inputFeatures / 16])
++        precondition(rowLo.shape == [outputFeatures] && rowDelta.shape == [outputFeatures])
++        self._baseQ = ParameterInfo(wrappedValue: baseQ, key: "base_q")
++        self._residualQ = ParameterInfo(wrappedValue: residualQ, key: "residual_q")
++        self._rowLo = ParameterInfo(wrappedValue: rowLo, key: "row_lo")
++        self._rowDelta = ParameterInfo(wrappedValue: rowDelta, key: "row_delta")
++        self.inputFeatures = inputFeatures
++        self.outputFeatures = outputFeatures
++        super.init(weight: MLXArray.zeros([0, 0]), bias: bias)
++    }
++
++    override func callAsFunction(_ x: MLXArray) -> MLXArray {
++        precondition(x.shape.last == inputFeatures, "packed Phonon input width mismatch")
++        let groups = inputFeatures / 128
++        let lo = rowLo.asType(.float32).reshaped([outputFeatures, 1])
++        let delta = rowDelta.asType(.float32).reshaped([outputFeatures, 1])
++        let baseScales = contiguous(broadcast(lo, to: [outputFeatures, groups]))
++        let residualScales = contiguous(broadcast(delta, to: [outputFeatures, groups]))
++        let baseBiases = contiguous(-baseScales)
++        let residualBiases = contiguous(-residualScales)
++        let x32 = x.asType(.float32)
++        var y = quantizedMM(x32, baseQ, scales: baseScales, biases: baseBiases,
++                            transpose: true, groupSize: 128, bits: 2, mode: .affine)
++        y = y + quantizedMM(x32, residualQ, scales: residualScales, biases: residualBiases,
++                            transpose: true, groupSize: 128, bits: 2, mode: .affine)
++        if let bias { y = y + bias.asType(.float32) }
++        return y.asType(x.dtype)
++    }
++}
++
++final class PackedFiveValueConv1d: Conv1d {
++    @ParameterInfo(key: "base_q") var baseQ: MLXArray
++    @ParameterInfo(key: "residual_q") var residualQ: MLXArray
++    @ParameterInfo(key: "row_lo") var rowLo: MLXArray
++    @ParameterInfo(key: "row_delta") var rowDelta: MLXArray
++    @ParameterInfo(key: "bias") var trainedBias: MLXArray?
++    let inputFeatures: Int
++    let outputFeatures: Int
++
++    init(baseQ: MLXArray, residualQ: MLXArray, rowLo: MLXArray, rowDelta: MLXArray, inputFeatures: Int, outputFeatures: Int, bias: MLXArray?) {
++        precondition(inputFeatures % 128 == 0 && inputFeatures % 16 == 0)
++        self._baseQ = ParameterInfo(wrappedValue: baseQ, key: "base_q")
++        self._residualQ = ParameterInfo(wrappedValue: residualQ, key: "residual_q")
++        self._rowLo = ParameterInfo(wrappedValue: rowLo, key: "row_lo")
++        self._rowDelta = ParameterInfo(wrappedValue: rowDelta, key: "row_delta")
++        self._trainedBias = ParameterInfo(wrappedValue: bias, key: "bias")
++        self.inputFeatures = inputFeatures
++        self.outputFeatures = outputFeatures
++        super.init(inputChannels: 1, outputChannels: 1, kernelSize: 1, bias: false)
++    }
++
++    override func callAsFunction(_ x: MLXArray) -> MLXArray {
++        precondition(x.shape.last == inputFeatures, "packed Phonon Conv1d input width mismatch")
++        let groups = inputFeatures / 128
++        let baseScales = contiguous(broadcast(rowLo.asType(.float32).reshaped([outputFeatures, 1]), to: [outputFeatures, groups]))
++        let residualScales = contiguous(broadcast(rowDelta.asType(.float32).reshaped([outputFeatures, 1]), to: [outputFeatures, groups]))
++        let baseBiases = contiguous(-baseScales)
++        let residualBiases = contiguous(-residualScales)
++        let x32 = x.asType(.float32)
++        var y = quantizedMM(x32, baseQ, scales: baseScales, biases: baseBiases, transpose: true, groupSize: 128, bits: 2, mode: .affine)
++        y = y + quantizedMM(x32, residualQ, scales: residualScales, biases: residualBiases, transpose: true, groupSize: 128, bits: 2, mode: .affine)
++        if let trainedBias { y = y + trainedBias.asType(.float32) }
++        return y.asType(x.dtype)
++    }
++}
++
++private func packedStem(_ key: String) -> String? {
++    key.hasSuffix(".base_q") ? String(key.dropLast(".base_q".count)) : nil
++}
++
++private func replacementModule(stem: String, module: PackedFiveValueLinear, conv: PackedFiveValueConv1d?) throws -> Module {
++    let parts = stem.split(separator: ".").map(String.init)
++    guard parts.count >= 5, parts[0] == "encoder", parts[1] == "layers", Int(parts[2]) != nil else {
++        throw NSError(domain: "KlangschriftPacked", code: 1, userInfo: [NSLocalizedDescriptionKey: "invalid packed module path \(stem)"])
++    }
++    switch Array(parts.dropFirst(3)) {
++    case ["feed_forward1", "linear1"], ["feed_forward1", "linear2"], ["feed_forward2", "linear1"], ["feed_forward2", "linear2"]:
++        return module
++    case ["conv", "pointwise_conv1"]:
++        guard let conv else { throw NSError(domain: "KlangschriftPacked", code: 7) }
++        return conv
++    case ["conv", "pointwise_conv2"]:
++        guard let conv else { throw NSError(domain: "KlangschriftPacked", code: 7) }
++        return conv
++    case ["self_attn", "linear_q"], ["self_attn", "linear_k"], ["self_attn", "linear_v"], ["self_attn", "linear_out"], ["self_attn", "linear_pos"]:
++        return module
++    default: throw NSError(domain: "KlangschriftPacked", code: 2, userInfo: [NSLocalizedDescriptionKey: "unsupported packed module \(stem)"])
++    }
++}
++
++/// Replaces all 264 five-value encoder modules and strictly verifies the
++/// remaining dense parameter key set before loading it.
++func loadPackedPhonon(model: ParakeetModel, weights: [String: MLXArray]) throws {
++    let stems = Set(weights.keys.compactMap(packedStem))
++    guard stems.count == 264 else { throw NSError(domain: "KlangschriftPacked", code: 3, userInfo: [NSLocalizedDescriptionKey: "expected 264 packed modules, found \(stems.count)"]) }
++    let flattened = Dictionary(uniqueKeysWithValues: model.parameters().flattened())
++    let expected = Set(flattened.keys)
++    var packedOriginal = Set<String>()
++    var replacements: [String: Module] = [:]
++    for stem in stems {
++        guard let base = weights[stem + ".base_q"], let residual = weights[stem + ".residual_q"], let lo = weights[stem + ".row_lo"], let delta = weights[stem + ".row_delta"] else {
++            throw NSError(domain: "KlangschriftPacked", code: 4, userInfo: [NSLocalizedDescriptionKey: "incomplete planes for \(stem)"])
++        }
++        let shape = flattened[stem + ".weight"]?.shape
++        guard let shape, shape.count == 2 || shape.count == 3 else { throw NSError(domain: "KlangschriftPacked", code: 5, userInfo: [NSLocalizedDescriptionKey: "missing dense shape for \(stem)"]) }
++        packedOriginal.insert(stem + ".weight")
++        if expected.contains(stem + ".bias") { packedOriginal.insert(stem + ".bias") }
++        let inputFeatures = shape.count == 2 ? shape[1] : shape[2]
++        let packed = PackedFiveValueLinear(baseQ: base, residualQ: residual, rowLo: lo, rowDelta: delta,
++                                            inputFeatures: inputFeatures, outputFeatures: shape[0], bias: weights[stem + ".bias"])
++        let conv = stem.contains(".conv.pointwise_") ? PackedFiveValueConv1d(baseQ: base, residualQ: residual, rowLo: lo, rowDelta: delta,
++                                                                                inputFeatures: inputFeatures, outputFeatures: shape[0], bias: weights[stem + ".bias"]) : nil
++        replacements[stem] = try replacementModule(stem: stem, module: packed, conv: conv)
++    }
++    try model.update(modules: ModuleChildren.unflattened(replacements), verify: .noUnusedKeys)
++    let planeKeys = Set(stems.flatMap { ["\($0).base_q", "\($0).residual_q", "\($0).row_lo", "\($0).row_delta"] })
++    let dense = weights.filter { !planeKeys.contains($0.key) && !packedOriginal.contains($0.key) }
++    let unexpected = Set(dense.keys).subtracting(expected.subtracting(packedOriginal))
++    let missing = expected.subtracting(packedOriginal).subtracting(dense.keys)
++    guard unexpected.isEmpty && missing.isEmpty else {
++        throw NSError(domain: "KlangschriftPacked", code: 6, userInfo: [NSLocalizedDescriptionKey: "packed dense key mismatch missing=\(missing.count) unexpected=\(unexpected.count)"])
++    }
++    try model.update(parameters: ModuleParameters.unflattened(dense), verify: .noUnusedKeys)
++}

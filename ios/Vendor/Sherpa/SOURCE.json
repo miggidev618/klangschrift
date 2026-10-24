@@ -1,0 +1,78 @@
+{
+  "version": "1.13.8",
+  "ios_archive_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/xcframework/sherpa-onnx-v1.13.8-ios-shared-onnxruntime-static.xcframework.zip",
+  "ios_archive_sha256": "e259a7d3b38ad7dec49bb078252a30bb42ede8355e2bb130cf8c1c78ed131f75",
+  "macos_archive_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/xcframework/sherpa-onnx-v1.13.8-macos-shared-onnxruntime-static.xcframework.zip",
+  "macos_archive_sha256": "82d5cb3af38c3cb4871c3532a6c7dc86d6b7db1077bcc9d6a1047100976f199b",
+  "combined_files": {
+    "Info.plist": {
+      "bytes": 1618,
+      "sha256": "0908208d1acf1412d06034a99c924fb87bc81a7844fbe8502476d908405308a4"
+    },
+    "ios-arm64/SherpaOnnxC.framework/SherpaOnnxC": {
+      "bytes": 26424736,
+      "sha256": "09cba3eff0b54641dae17cd479286c0fb9ff933b6bba5f083037a7f21f1c74ea"
+    },
+    "ios-arm64/SherpaOnnxC.framework/Info.plist": {
+      "bytes": 707,
+      "sha256": "7720c423accf9cf22a9ebb694a283658d4ebe0ce0416ecfaf709e6529d06ac37"
+    },
+    "ios-arm64/SherpaOnnxC.framework/_CodeSignature/CodeResources": {
+      "bytes": 2292,
+      "sha256": "0ab19049aca581279c7cf93fabab823e2aefb79b3836d60c51d05d4c32b2a733"
+    },
+    "ios-arm64/SherpaOnnxC.framework/Modules/module.modulemap": {
+      "bytes": 81,
+      "sha256": "b8a4f253774183fa531116df4772eca938f310908745e1be1e01d67eb1288ab2"
+    },
+    "ios-arm64/SherpaOnnxC.framework/Headers/sherpa-onnx/c-api/c-api.h": {
+      "bytes": 167657,
+      "sha256": "2a1b95084be8fd1deb3228fcad2fd3f7f0258b64582f7402281ec174c7b7f4ce"
+    },
+    "ios-arm64_x86_64-simulator/SherpaOnnxC.framework/SherpaOnnxC": {
+      "bytes": 58482032,
+      "sha256": "4d172bc52190b38f93402693e43ff37d05041b31fbac931ad1f938fbaec179d4"
+    },
+    "ios-arm64_x86_64-simulator/SherpaOnnxC.framework/Info.plist": {
+      "bytes": 707,
+      "sha256": "7720c423accf9cf22a9ebb694a283658d4ebe0ce0416ecfaf709e6529d06ac37"
+    },
+    "ios-arm64_x86_64-simulator/SherpaOnnxC.framework/_CodeSignature/CodeResources": {
+      "bytes": 2292,
+      "sha256": "0ab19049aca581279c7cf93fabab823e2aefb79b3836d60c51d05d4c32b2a733"
+    },
+    "ios-arm64_x86_64-simulator/SherpaOnnxC.framework/Modules/module.modulemap": {
+      "bytes": 81,
+      "sha256": "b8a4f253774183fa531116df4772eca938f310908745e1be1e01d67eb1288ab2"
+    },
+    "ios-arm64_x86_64-simulator/SherpaOnnxC.framework/Headers/sherpa-onnx/c-api/c-api.h": {
+      "bytes": 167657,
+      "sha256": "2a1b95084be8fd1deb3228fcad2fd3f7f0258b64582f7402281ec174c7b7f4ce"
+    },
+    "macos-arm64_x86_64/SherpaOnnxC.framework/SherpaOnnxC": {
+      "bytes": 58088960,
+      "sha256": "e0bc82dacbe1cf7a969e17d055e686c403f7be9b6aaccc623f1510adb1266444"
+    },
+    "macos-arm64_x86_64/SherpaOnnxC.framework/Info.plist": {
+      "bytes": 577,
+      "sha256": "8657fc7c9e1ec6e27b50ca6b8a9b535963eb7510021022ffde7de66fcaaa078d"
+    },
+    "macos-arm64_x86_64/SherpaOnnxC.framework/_CodeSignature/CodeResources": {
+      "bytes": 2548,
+      "sha256": "ad1b95113e4a364e114904dfeabbf8f3f37c963e0a6d7878d5c60b22e00e1f36"
+    },
+    "macos-arm64_x86_64/SherpaOnnxC.framework/Modules/module.modulemap": {
+      "bytes": 81,
+      "sha256": "b8a4f253774183fa531116df4772eca938f310908745e1be1e01d67eb1288ab2"
+    },
+    "macos-arm64_x86_64/SherpaOnnxC.framework/Headers/sherpa-onnx/c-api/c-api.h": {
+      "bytes": 167657,
+      "sha256": "2a1b95084be8fd1deb3228fcad2fd3f7f0258b64582f7402281ec174c7b7f4ce"
+    },
+    "macos-arm64_x86_64/SherpaOnnxC.framework/Headers/sherpa-onnx/c-api/cxx-api.h": {
+      "bytes": 66998,
+      "sha256": "5b02af132b382a82addfa47f927d9cb41bb71d8598d78253ded41410fb12dbda"
+    }
+  },
+  "macos_transform": "Framework wrapper, unchanged C API/header payload; install_name_tool -id @rpath/SherpaOnnxC.framework/SherpaOnnxC; codesign ad hoc --timestamp=none --identifier org.k2-fsa.SherpaOnnxC"
+}

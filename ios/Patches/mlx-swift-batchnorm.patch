@@ -1,0 +1,33 @@
+diff --git a/Source/MLXNN/Normalization.swift b/Source/MLXNN/Normalization.swift
+index 844daed..4b048f7 100644
+--- a/Source/MLXNN/Normalization.swift
++++ b/Source/MLXNN/Normalization.swift
+@@ -256,8 +256,8 @@ open class BatchNorm: Module, UnaryLayer {
+     public let eps: Float
+     public let momentum: Float
+ 
+-    public let weight: MLXArray?
+-    public let bias: MLXArray?
++    @ParameterInfo(key: "weight") public var weight: MLXArray?
++    @ParameterInfo(key: "bias") public var bias: MLXArray?
+ 
+     @ParameterInfo(key: "running_mean") var runningMean: MLXArray?
+     @ParameterInfo(key: "running_var") var runningVar: MLXArray?
+@@ -293,13 +293,10 @@ open class BatchNorm: Module, UnaryLayer {
+         self.eps = eps
+         self.momentum = momentum
+ 
+-        if affine {
+-            self.weight = MLXArray.ones([featureCount])
+-            self.bias = MLXArray.zeros([featureCount])
+-        } else {
+-            self.weight = nil
+-            self.bias = nil
+-        }
++        self._weight = ParameterInfo(
++            wrappedValue: affine ? MLXArray.ones([featureCount]) : nil, key: "weight")
++        self._bias = ParameterInfo(
++            wrappedValue: affine ? MLXArray.zeros([featureCount]) : nil, key: "bias")
+ 
+         if trackRunningStats {
+             self._runningMean.wrappedValue = MLXArray.zeros([featureCount])

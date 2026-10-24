@@ -1,0 +1,66 @@
+diff --git a/Package.swift b/Package.swift
+index a6d9f48..0f27df5 100644
+--- a/Package.swift
++++ b/Package.swift
+@@ -25,7 +25,6 @@ let package = Package(
+             dependencies: [
+                 "FastClusterWrapper",
+                 "MachTaskSelfWrapper",
+-                "NemoTextProcessing",
+             ],
+             path: "Sources/FluidAudio",
+             exclude: ["ASR/Parakeet/Unified/benchmark.md"],
+@@ -34,17 +33,6 @@ let package = Package(
+                 .process("TTS/LuxTts/G2p/Resources")
+             ]
+         ),
+-        // Byte-exact NeMo text normalization (FST engine, all 7 languages).
+-        // Prebuilt xcframework from FluidInference/text-processing-rs v0.3.1
+-        // (macOS, iOS, iOS Simulator and Mac Catalyst slices).
+-        // Always linked on tools < 6.2; Package@swift-6.2.swift exposes it as
+-        // the opt-out `NemoTextProcessing` trait (#880, #888).
+-        .binaryTarget(
+-            name: "NemoTextProcessing",
+-            url:
+-                "https://github.com/FluidInference/text-processing-rs/releases/download/v0.3.1/NemoTextProcessing.xcframework.zip",
+-            checksum: "5fa8c10d4ec26c1bb2413125f351a7222a4c68a23b74476680fbada7e26fc6aa"
+-        ),
+         .target(
+             name: "FastClusterWrapper",
+             path: "Sources/FastClusterWrapper",
+diff --git a/Package@swift-6.2.swift b/Package@swift-6.2.swift
+index 79c2365..8c6fc3c 100644
+--- a/Package@swift-6.2.swift
++++ b/Package@swift-6.2.swift
+@@ -35,7 +35,6 @@ let package = Package(
+             name: "NemoTextProcessing",
+             description: "Link the bundled NeMo text-normalization engine (TTS frontends, ITN)."
+         ),
+-        .default(enabledTraits: ["NemoTextProcessing"]),
+     ],
+     dependencies: [],
+     targets: [
+@@ -44,7 +43,6 @@ let package = Package(
+             dependencies: [
+                 "FastClusterWrapper",
+                 "MachTaskSelfWrapper",
+-                .target(name: "NemoTextProcessing", condition: .when(traits: ["NemoTextProcessing"])),
+             ],
+             path: "Sources/FluidAudio",
+             exclude: ["ASR/Parakeet/Unified/benchmark.md"],
+@@ -53,15 +51,6 @@ let package = Package(
+                 .process("TTS/LuxTts/G2p/Resources")
+             ]
+         ),
+-        // Byte-exact NeMo text normalization (FST engine, all 7 languages).
+-        // Prebuilt xcframework from FluidInference/text-processing-rs v0.3.1
+-        // (macOS, iOS, iOS Simulator and Mac Catalyst slices).
+-        .binaryTarget(
+-            name: "NemoTextProcessing",
+-            url:
+-                "https://github.com/FluidInference/text-processing-rs/releases/download/v0.3.1/NemoTextProcessing.xcframework.zip",
+-            checksum: "5fa8c10d4ec26c1bb2413125f351a7222a4c68a23b74476680fbada7e26fc6aa"
+-        ),
+         .target(
+             name: "FastClusterWrapper",
+             path: "Sources/FastClusterWrapper",

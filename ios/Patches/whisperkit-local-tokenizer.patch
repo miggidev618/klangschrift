@@ -1,0 +1,73 @@
+diff --git a/Sources/WhisperKit/Utilities/ModelUtilities.swift b/Sources/WhisperKit/Utilities/ModelUtilities.swift
+index 64891c7..2661323 100644
+--- a/Sources/WhisperKit/Utilities/ModelUtilities.swift
++++ b/Sources/WhisperKit/Utilities/ModelUtilities.swift
+@@ -20,60 +20,15 @@ extension ModelUtilities {
+         additionalSearchPaths: [URL] = [],
+         useBackgroundSession: Bool = false
+     ) async throws -> WhisperTokenizer {
+-        let tokenizerName = tokenizerNameForVariant(pretrained)
+-        let hubApi = HubApiWrapper(downloadBase: tokenizerFolder, useBackgroundSession: useBackgroundSession)
+-        let hubTokenizerFolder = hubApi.localRepoLocation(HubApiWrapper.Repo(id: tokenizerName))
+-        
+-        // Determine which local folder to use
+-        let localTokenizerFolder: URL? = {
+-            func hasTokenizer(in folder: URL) -> Bool {
+-                let tokenizerPath = folder.appendingPathComponent("tokenizer.json")
+-                let exists = FileManager.default.fileExists(atPath: tokenizerPath.path)
+-                Logging.debug("Checking for local tokenizer at \(tokenizerPath.path) - \(exists ? "found" : "not found")")
+-                return exists
+-            }
+-
+-            // Search in priority order:
+-            // Hub-based folder structure
+-            var searchPaths: [URL] = [hubTokenizerFolder]
+-            // Top level of tokenizerFolder (if provided)
+-            if let tokenizerFolder {
+-                searchPaths.append(tokenizerFolder)
+-            }
+-            // Additional search paths
+-            searchPaths.append(contentsOf: additionalSearchPaths)
+-
+-            let foundPath = searchPaths.first(where: hasTokenizer)
+-            if let found = foundPath {
+-                Logging.debug("Found local tokenizer at \(found.path)")
+-            } else {
+-                Logging.debug("No tokenizer found in any local search paths")
+-            }
+-            
+-            return foundPath
+-        }()
+-
+-        // If we found a local folder with a tokenizer.json, try to load from it
+-        if let localFolder = localTokenizerFolder {
+-            do {
+-                Logging.debug("Loading tokenizer from \(localFolder.path)")
+-                let wrapper = try await AutoTokenizerWrapper.from(modelFolder: localFolder, hubApi: hubApi)
+-                return WhisperTokenizerWrapper(tokenizer: wrapper, at: localFolder)
+-            } catch {
+-                // Error during the local loading process and fall through to load from Hub
+-                Logging.debug("Error loading local tokenizer: \(error)")
+-            }
++        // Klangschrift offline contract: an explicit local tokenizer is required.
++        // Missing/malformed assets fail locally; never fall through to Hub retrieval.
++        guard let folder = tokenizerFolder,
++              FileManager.default.fileExists(atPath: folder.appendingPathComponent("tokenizer.json").path),
++              FileManager.default.fileExists(atPath: folder.appendingPathComponent("tokenizer_config.json").path) else {
++            throw WhisperError.tokenizerUnavailable()
+         }
+-
+-        // Fallback to downloading from the Hub if local loading is not possible or fails
+-        Logging.debug("Downloading tokenizer from Hub at \(hubTokenizerFolder)")
+-        return try await WhisperTokenizerWrapper(
+-            tokenizer: AutoTokenizerWrapper.from(
+-                pretrained: tokenizerName,
+-                hubApi: hubApi
+-            ),
+-            at: hubTokenizerFolder
+-        )
++        let wrapper = try await AutoTokenizerWrapper.from(modelFolder: folder)
++        return WhisperTokenizerWrapper(tokenizer: wrapper, at: folder)
+     }
+     
+     /// Formats and sorts model file names based on model variants
