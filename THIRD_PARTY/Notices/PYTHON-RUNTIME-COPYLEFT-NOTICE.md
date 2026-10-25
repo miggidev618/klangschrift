@@ -1,24 +1,26 @@
-# Weitere Copyleft-Hinweise der Python-Laufzeit
+# Further Python runtime copyleft notices
 
-Der Mac-Build kopiert die Lizenzdateien aller obersten Python-Distributionen
-nach `Contents/Resources/Notices/Python/`. Die Prüfung des tatsächlich
-gepackten App-Bundles ergab zusätzlich folgende vollständigen Texte, die für
-eine leicht auffindbare Verteilung hier separat beigelegt werden:
+[Deutsch](PYTHON-RUNTIME-COPYLEFT-NOTICE.de.md)
 
-- `LGPL-3.0.txt`: für die in setuptools vendorte Distribution `autocommand`
-  (LGPLv3). Deren unveränderte Lizenzdatei bleibt auch in der Python-Laufzeit.
-- `MPL-2.0.txt`: für `certifi` (MPL-2.0), `tqdm` (MPL-2.0 AND MIT) sowie den
-  in setuptools enthaltenen `validate-pyproject`-Hinweis.
+The Mac build copies the license files of all top-level Python distributions
+to `Contents/Resources/Notices/Python/`. Inspection of the app bundle that was
+actually packaged also found the following complete texts, which are included
+here separately for easy-to-find distribution:
 
-Die vorhandenen GPL-3.0- und GCC-Runtime-Exception-Texte von SciPy und NumPy
-werden bereits unverändert mit ihren jeweiligen Python-Lizenzdateien kopiert.
-Dieser Hinweis inventarisiert die geprüfte Mac-Laufzeit; er ersetzt keine
-Lizenztexte der jeweiligen Upstream-Projekte.
+- `LGPL-3.0.txt`: for the `autocommand` distribution vendored in setuptools
+  (LGPLv3). Its unmodified license file also remains in the Python runtime.
+- `MPL-2.0.txt`: for `certifi` (MPL-2.0), `tqdm` (MPL-2.0 AND MIT), and the
+  `validate-pyproject` notice included in setuptools.
 
-Die unkompilierten Python-Quellen der eingebundenen Wheels bleiben im App-Bundle
-als `.py`-Dateien erhalten (beispielsweise `jinja2/runtime.py`). Der
-LGPLv3-relevante `autocommand`-Quellstand liegt unverändert unter
+The existing GPL-3.0 and GCC runtime exception texts of SciPy and NumPy are
+already copied unmodified with their respective Python license files. This
+notice inventories the checked Mac runtime; it does not replace the license
+texts of the respective upstream projects.
+
+The uncompiled Python sources of the included wheels remain in the app bundle
+as `.py` files (for example, `jinja2/runtime.py`). The LGPLv3-relevant
+`autocommand` source remains unmodified under
 `Runtime/Python.framework/Versions/3.14/lib/python3.14/site-packages/setuptools/_vendor/autocommand/`;
-Upstream: <https://github.com/Lucretiel/autocommand>. Die jeweiligen
-Upstream-Quellseiten für MPL-Komponenten sind
-<https://github.com/certifi/python-certifi> und <https://github.com/tqdm/tqdm>.
+upstream: <https://github.com/Lucretiel/autocommand>. The respective upstream
+source pages for MPL components are
+<https://github.com/certifi/python-certifi> and <https://github.com/tqdm/tqdm>.

@@ -1,43 +1,43 @@
-# SciPy-Laufzeit: libquadmath und GCC-Laufzeitbibliotheken
+# SciPy runtime: libquadmath and GCC runtime libraries
 
-Das Mac-App-Bundle enthält aus dem fest gepinnten SciPy-Wheel 1.18.1 die Dateien
+[Deutsch](SCIPY-RUNTIME-NOTICE.de.md)
+
+The Mac app bundle contains the following files from the pinned SciPy wheel 1.18.1:
 `scipy/.dylibs/libquadmath.0.dylib`, `libgfortran.5.dylib` und
 `libgcc_s.1.1.dylib`.
 
-`libquadmath` ist laut dem mit SciPy gelieferten `LICENSE.txt` unter
-LGPL-2.1-or-later lizenziert. Der vollständige Text der LGPL 2.1 liegt in
-`LGPL-2.1.txt`. Die GPL-3.0- und GCC-Runtime-Exception-Hinweise für
-`libgfortran` und `libgcc_s` bleiben im unveränderten SciPy-Lizenztext
-(`Notices/Python/scipy-1.18.1.dist-info/LICENSE.txt`) enthalten.
+According to the `LICENSE.txt` supplied with SciPy, `libquadmath` is licensed
+under LGPL-2.1-or-later. The full text of LGPL 2.1 is in `LGPL-2.1.txt`. The
+GPL-3.0 and GCC runtime exception notices for `libgfortran` and `libgcc_s`
+remain in the unmodified SciPy license text
+(`Notices/Python/scipy-1.18.1.dist-info/LICENSE.txt`).
 
-Die Abhängigkeit ist im Quellbaum als `scipy==1.18.1` mit dem SHA-256
-`011413b7426b75012840e35649e00fe0a2c3bae89fed433876e3a99251572efc`
-festgelegt. Die Konfiguration des tatsächlich geprüften SciPy-Wheels nennt für
-den Fortran-Compiler GCC 13.4.0. Diese Compilerangabe ist ein
-Konfigurationsbeleg des Wheels; sie belegt nicht für sich allein die exakte
-Quellprovenienz jeder einzelnen mitgelieferten dylib.
+The dependency is fixed in the source tree as `scipy==1.18.1` with SHA-256
+`011413b7426b75012840e35649e00fe0a2c3bae89fed433876e3a99251572efc`. The
+configuration of the checked SciPy wheel names GCC 13.4.0 as the Fortran
+compiler. This compiler information is configuration evidence for the wheel;
+it does not by itself establish the exact source provenance of every included
+dylib.
 
-Reproduzierbare Quell- und Herkunftswege:
+Source and origin links:
 
-- SciPy 1.18.1: <https://pypi.org/project/scipy/1.18.1/> und
+- SciPy 1.18.1: <https://pypi.org/project/scipy/1.18.1/> and
   <https://github.com/scipy/scipy/tree/v1.18.1>
-- GCC 13.4.0 einschließlich `libquadmath`:
-  [begleitendes Release-Asset](https://github.com/miggidev618/klangschrift/releases/download/v1.0/gcc-13.4.0.tar.xz),
+- GCC 13.4.0 including `libquadmath`:
+  [accompanying release asset](https://github.com/miggidev618/klangschrift/releases/download/v1.0/gcc-13.4.0.tar.xz),
   <https://ftp.gnu.org/gnu/gcc/gcc-13.4.0/gcc-13.4.0.tar.xz>,
-  [offizielles SHA-512-Manifest](https://gcc.gnu.org/pub/gcc/releases/gcc-13.4.0/sha512.sum)
-  und
+  [official SHA-512 manifest](https://gcc.gnu.org/pub/gcc/releases/gcc-13.4.0/sha512.sum)
+  and
   <https://gcc.gnu.org/git/?p=gcc.git;a=tree;h=refs/tags/releases/gcc-13.4.0>
 
-Das unveränderte Archiv `gcc-13.4.0.tar.xz` wird als begleitendes Asset im
-selben privaten Release v1.0 bereitgestellt. Sein SHA-256 ist
-`9c4ce6dbb040568fdc545588ac03c5cbc95a8dbf0c7aa490170843afb59ca8f5`; die
-offizielle SHA-512-Prüfsumme steht im oben verlinkten GCC-Manifest. Das ist der
-dokumentierte maschinenlesbare Quellzugang für die mitgelieferte
-LGPL-Komponente, ohne eine über diesen konkreten Release hinausgehende
-Quellcode-Zusage zu erklären.
+The unmodified archive `gcc-13.4.0.tar.xz` is provided as an accompanying
+asset in the same private release v1.0. Its SHA-256 is
+`9c4ce6dbb040568fdc545588ac03c5cbc95a8dbf0c7aa490170843afb59ca8f5`; the
+official SHA-512 checksum is in the GCC manifest linked above. This is the
+documented machine-readable source access for the included LGPL component,
+without declaring a source-code commitment beyond this specific release.
 
-`libquadmath.0.dylib` liegt als eigene dynamische Bibliothek unverändert im
-SciPy-Unterordner. Ein Austausch in einem ad-hoc-signierten App-Bundle würde
-dessen Code-Signatur ungültig machen und erfordert technisch eine erneute
-lokale Signierung; diese Information beschreibt die Paketierung und ist keine
-Installations- oder Rechtszusage.
+`libquadmath.0.dylib` remains unmodified as a separate dynamic library in the
+SciPy subdirectory. Replacing it in the signed app would invalidate the app’s
+signature. It would need to be signed again locally; this information describes
+packaging and is not an installation or legal commitment.

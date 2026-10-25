@@ -1,6 +1,8 @@
-# Mac-App bauen
+# Build the Mac app
 
-Du brauchst einen Mac mit Apple Silicon und macOS 26 oder neuer, Xcode und Python 3.14.
+[Deutsch](BUILD-MAC.de.md)
+
+You need a Mac with Apple Silicon and macOS 26 or newer, Xcode and Python 3.14.
 
 ```sh
 cd macos
@@ -16,6 +18,6 @@ site_packages="$(.build/python/bin/python -c 'import sysconfig; print(sysconfig.
   --site-packages "$site_packages"
 ```
 
-Das Skript lädt die nötigen Bibliotheken, baut die App und legt sie unter `/private/tmp/Klangschrift.app` ab. Von dort in den Programme-Ordner ziehen.
+The script downloads the required libraries, builds the app and puts it at `/private/tmp/Klangschrift.app`. Move it from there to the Applications folder.
 
-Die Sprachmodelle sind nicht im Repository. Du lädst sie beim ersten Start in der App herunter.
+The speech models are not in the repository. Download them in the app on first launch.

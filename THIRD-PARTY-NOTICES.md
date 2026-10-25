@@ -1,13 +1,15 @@
-# Fremde Bestandteile
+# Third-party components
 
-Klangschrift selbst steht unter GPL-3.0. Fremde Bibliotheken und Modelle behalten ihre eigenen Lizenzen.
+[Deutsch](THIRD-PARTY-NOTICES.de.md)
 
-Verwendet werden unter anderem WhisperKit (MIT), FluidAudio (Apache-2.0), Moonshine Voice (MIT), Sherpa-ONNX und Kaldi Native Fbank (Apache-2.0), ONNX Runtime (MIT), nlohmann JSON (MIT), MLX Swift (MIT), UTF8CPP (Boost) und UTF8Proc (MIT).
+Klangschrift itself is licensed under GPL-3.0. Third-party libraries and models retain their own licenses.
 
-Die vollständigen Lizenztexte liegen hier:
+It uses, among others, WhisperKit (MIT), FluidAudio (Apache-2.0), Moonshine Voice (MIT), Sherpa-ONNX and Kaldi Native Fbank (Apache-2.0), ONNX Runtime (MIT), nlohmann JSON (MIT), MLX Swift (MIT), UTF8CPP (Boost) and UTF8Proc (MIT).
+
+The complete license texts are here:
 
 - Mac: `macos/Vendor/DesktopSDKs/Attribution/`
-- iPhone: `ios/Vendor/` und `ios/Licenses/`
-- Python-Laufzeit der Mac-App: `THIRD_PARTY/Notices/` (in der App unter `Contents/Resources/Notices/`)
+- iPhone: `ios/Vendor/` and `ios/Licenses/`
+- Python runtime of the Mac app: `THIRD_PARTY/Notices/` (in the app under `Contents/Resources/Notices/`)
 
-Die Mac-App enthält über SciPy die Bibliothek libquadmath aus GCC 13.4.0 (LGPL-2.1). Der passende GCC-Quellcode liegt dem Release bei.
+Through SciPy, the Mac app contains the libquadmath library from GCC 13.4.0 (LGPL-2.1). The matching GCC source code is included with the release.

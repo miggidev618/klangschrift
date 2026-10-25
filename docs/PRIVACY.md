@@ -1,9 +1,11 @@
-# Datenschutz
+# Privacy
 
-Klangschrift erkennt Sprache direkt auf dem Gerät. Aufnahmen und Texte bleiben dort. Ins Internet geht die App nur, um Modelle herunterzuladen.
+[Deutsch](PRIVACY.de.md)
 
-**Mac:** Die Daten liegen unter `~/Library/Application Support/io.github.miggidev618.klangschrift/` und sind mit einem Schlüssel aus dem Schlüsselbund verschlüsselt. Den Verlauf kannst du einzeln oder komplett löschen.
+Klangschrift recognizes speech directly on the device. Recordings and text stay there. The app only goes online to download models.
 
-**iPhone:** Verlauf und Wörterbuch liegen in der App. Unter Einstellungen → Speicher & Daten lassen sich Verlauf, Modelle und Zwischenspeicher löschen.
+**Mac:** Data is stored under `~/Library/Application Support/io.github.miggidev618.klangschrift/` and encrypted with a key from Keychain. You can delete individual entries or the entire history.
 
-**Berechtigungen:** Mikrofon zum Aufnehmen. Auf dem Mac zusätzlich Bedienungshilfen, damit der Text ins aktive Fenster geschrieben werden kann. Auf dem iPhone braucht die Tastatur „Vollen Zugriff“, um mit der App zu sprechen.
+**iPhone:** History and dictionary are stored in the app. Under Settings → Storage & Data, you can delete history, models and caches.
+
+**Permissions:** Microphone for recording. On Mac, also Accessibility so text can be written into the active window. On iPhone, the keyboard needs “Full Access” to communicate with the app.

@@ -1,8 +1,10 @@
-# Änderungen
+# Changes
 
-## 1.0 – Oktober 2026
+[Deutsch](CHANGELOG.de.md)
 
-Erste Version für Mac und iPhone.
+## 1.0 – October 2026
 
-- Mac: Diktieren per Taste, Pille am Bildschirmrand, Verlauf mit Suche und Kalender, Wörterbuch.
-- iPhone: Diktier-Tastatur, Verlauf, Wörterbuch, Speicher & Daten zum Aufräumen.
+First version for Mac and iPhone.
+
+- Mac: Hold a key to dictate, pill at the edge of the screen, history with search and calendar, dictionary.
+- iPhone: Dictation keyboard, history, dictionary, storage & data for cleanup.

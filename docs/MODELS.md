@@ -1,12 +1,14 @@
-# Modelle
+# Models
 
-Die Sprachmodelle sind nicht im Repository. Die App lädt sie bei Bedarf herunter und prüft dabei die Prüfsumme.
+[Deutsch](MODELS.de.md)
 
-| Modell | Lizenz |
+The speech models are not in the repository. The app downloads them when needed and verifies the checksum.
+
+| Model | License |
 | --- | --- |
 | Whisper | MIT |
 | Moonshine Streaming | MIT |
 | Parakeet, Phonon-2 | CC-BY-4.0 |
 | Sherpa Zipformer | Apache-2.0 |
 
-Die Download-Quellen stehen in `macos/Vendor/ModelCatalog/AP04-REFERENCE-MANIFESTS.json` (Mac) und `ios/Core/DictationModel.swift` (iPhone).
+The download sources are in `macos/Vendor/ModelCatalog/AP04-REFERENCE-MANIFESTS.json` (Mac) and `ios/Core/DictationModel.swift` (iPhone).

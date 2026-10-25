@@ -1,16 +1,18 @@
-# iPhone-App bauen
+# Build the iPhone app
 
-Du brauchst einen Mac mit Xcode, ein iPhone und eine Apple-ID.
+[Deutsch](BUILD-IOS.de.md)
 
-1. `ios/KlangschriftIOS.xcodeproj` in Xcode öffnen.
-2. Bei der App und bei der Tastatur dein eigenes Team auswählen. Bundle-IDs und App Group auf eigene Werte ändern (z. B. `com.deinname.klangschrift`).
-3. iPhone anschliessen, auf dem iPhone den Entwicklermodus einschalten und in Xcode auf Start drücken.
-4. In der App ein Modell laden (empfohlen: Whisper Base).
-5. Auf dem iPhone unter Einstellungen → Allgemein → Tastatur → Tastaturen die Klangschrift-Tastatur hinzufügen und „Vollen Zugriff“ erlauben.
+You need a Mac with Xcode, an iPhone and an Apple ID.
 
-Mit einer kostenlosen Apple-ID läuft die App sieben Tage. Danach in Xcode einfach neu installieren.
+1. Open `ios/KlangschriftIOS.xcodeproj` in Xcode.
+2. Select your own team for the app and the keyboard. Change bundle IDs and the App Group to your own values (for example, `com.yourname.klangschrift`).
+3. Connect the iPhone, turn on Developer Mode on the iPhone and press Run in Xcode.
+4. Download a model in the app (recommended: Whisper Base).
+5. On the iPhone, add the Klangschrift keyboard under Settings → General → Keyboard → Keyboards and allow “Full Access”.
 
-Ohne Xcode-Oberfläche geht der Build auch im Terminal:
+With a free Apple ID, the app works for seven days. Then simply reinstall it in Xcode.
+
+You can also build in Terminal without the Xcode interface:
 
 ```sh
 cd ios
