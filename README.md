@@ -6,7 +6,7 @@ Lokales Diktieren für Mac und iPhone. Klangschrift verarbeitet Aufnahmen auf de
 
 | Plattform | Version | Bereitstellung |
 | --- | --- | --- |
-| Mac | 1.0 (Build 59) | Selbstbau aus diesem Quellcode |
+| Mac | 1.0 (Build 59) | [Privates Release v1.0](https://github.com/miggidev618/klangschrift/releases/tag/v1.0) oder Selbstbau |
 | iPhone | 1.0.2 (Build 30) | Selbstbau in Xcode auf dem eigenen Gerät |
 
 ## Funktionen
@@ -52,7 +52,7 @@ Der Modellvergleich zeigt die verfügbaren Modelle und ihre in der App dargestel
 
 ## Bauen
 
-Klangschrift wird derzeit aus dem Quellcode gebaut. Eine allgemein installierbare iPhone-Datei und ein beglaubigtes Mac-Paket werden nicht angeboten.
+Für Apple-Silicon-Macs steht im [privaten Release v1.0](https://github.com/miggidev618/klangschrift/releases/tag/v1.0) ein ad-hoc-signiertes, nicht notarisiertes Paket bereit. macOS kann deshalb beim ersten Start eine Sicherheitsabfrage zeigen. Eine allgemein installierbare iPhone-Datei wird nicht angeboten; die iPhone-App wird auf dem eigenen Gerät in Xcode gebaut.
 
 - [Mac bauen](docs/BUILD-MAC.md)
 - [iPhone bauen](docs/BUILD-IOS.md)
@@ -60,7 +60,7 @@ Klangschrift wird derzeit aus dem Quellcode gebaut. Eine allgemein installierbar
 - [Modelle und Quellen](docs/MODELS.md)
 - [Drittanbieterhinweise](THIRD-PARTY-NOTICES.md)
 
-Für den Mac wird Apple Silicon vorausgesetzt. Das aktuelle offizielle Moonshine-SDK wurde für macOS 26 gebaut; frühere macOS-Versionen sind damit nicht geprüft. Für das iPhone benötigt man einen Mac mit Xcode, ein zum gewählten Modell passendes iPhone und eine eigene Apple-ID für das persönliche Entwicklungsteam.
+Für den Mac wird Apple Silicon und macOS 26 oder neuer vorausgesetzt. Das aktuelle offizielle Moonshine-SDK wurde für macOS 26 gebaut; frühere macOS-Versionen sind damit nicht geprüft. Für das iPhone benötigt man einen Mac mit Xcode, ein zum gewählten Modell passendes iPhone und eine eigene Apple-ID für das persönliche Entwicklungsteam.
 
 ## Hilfe
 

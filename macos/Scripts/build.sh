@@ -98,6 +98,17 @@ cp Helper/mlx-helper/klangschrift_mlx_helper.py "$app/Contents/Resources/Helper/
 cp Vendor/ModelCatalog/AP04-REFERENCE-MANIFESTS.json "$app/Contents/Resources/"
 cp Resources/Brand/KlangschriftLogoOchre.png "$app/Contents/Resources/Brand/"
 cp "$repo_root/../LICENSE" "$app/Contents/Resources/Notices/GPL-3.0-only.txt"
+mkdir -p "$app/Contents/Resources/Notices/Runtime"
+for notice in \
+  "$repo_root/../THIRD-PARTY-NOTICES.md" \
+  "$repo_root/../THIRD_PARTY/Notices/LGPL-2.1.txt" \
+  "$repo_root/../THIRD_PARTY/Notices/LGPL-3.0.txt" \
+  "$repo_root/../THIRD_PARTY/Notices/MPL-2.0.txt" \
+  "$repo_root/../THIRD_PARTY/Notices/SCIPY-RUNTIME-NOTICE.md" \
+  "$repo_root/../THIRD_PARTY/Notices/PYTHON-RUNTIME-COPYLEFT-NOTICE.md"; do
+  [[ -f "$notice" ]] || { print -u2 "Missing runtime notice: $notice"; exit 66; }
+  cp "$notice" "$app/Contents/Resources/Notices/Runtime/${notice:t}"
+done
 for bundle in Klangschrift_KlangschriftPresentation.bundle Klangschrift_KlangschriftUI.bundle KlangschriftDesktopFluidAudio_FluidAudio.bundle; do
   ditto --norsrc --noextattr --noacl "$products/$bundle" "$app/Contents/Resources/$bundle"
 done
