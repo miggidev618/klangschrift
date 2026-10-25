@@ -1,12 +1,6 @@
-# Klangschrift für macOS bauen
+# Mac-App bauen
 
-## Voraussetzungen
-
-- Apple-Silicon-Mac mit macOS 26 oder neuer: Das aktuelle offizielle Moonshine-SDK wurde für macOS 26 gebaut; frühere Versionen sind nicht geprüft.
-- Geprüfter Bauweg: macOS 27.0.1, Xcode 27.1 und Apple Swift 6.4.
-- Python 3.14. Der getestete Weg verwendet ein lokales venv mit den unten gepinnten Helper-Abhängigkeiten.
-
-## Quellcode bauen
+Du brauchst einen Mac mit Apple Silicon und macOS 26 oder neuer, Xcode und Python 3.14.
 
 ```sh
 cd macos
@@ -22,10 +16,6 @@ site_packages="$(.build/python/bin/python -c 'import sysconfig; print(sysconfig.
   --site-packages "$site_packages"
 ```
 
-`requirements.lock` enthält die vollständigen direkten und transitiven Pins mit SHA-256. Der Builder lehnt ein `site-packages` mit fehlenden oder zusätzlichen Distributionen ab.
+Das Skript lädt die nötigen Bibliotheken, baut die App und legt sie unter `/private/tmp/Klangschrift.app` ab. Von dort in den Programme-Ordner ziehen.
 
-Der Builder lädt das gepinnte Moonshine-SDK mit Prüfsumme, baut App, Worker und Installer mit zwei Jobs, bündelt Ressourcen, den Python-Helfer, das übergebene Python-3.14-Laufzeitsystem und die Modellmanifestdaten. Er signiert die lokale `.app` ad hoc und installiert oder startet sie nicht. Die Ausgabe ist ein getesteter Quellbau auf dem genannten Host, keine notarisiert verteilte oder allgemein portable Standalone-App.
-
-Vor dem Signieren entfernt der Builder lokale Debug-Symbole aus den drei eigenen Executables und lässt ausschließlich die kopierte Python-Standardbibliotheks-Test-Suite weg. Produktcode, Python-Laufzeit, Modellressourcen und Lizenzhinweise bleiben Bestandteil des Pakets.
-
-Der Quellbau und die Signaturprüfung sind erfolgt. Ein nativer Start, Modellbezug, Aufnahme, Transkription, Einfügen bzw. Kopieren, Verlauf und Neustart wurden damit nicht abgenommen. Modelle werden nicht mit dem Repository geliefert; siehe [MODELS.md](MODELS.md).
+Die Sprachmodelle sind nicht im Repository. Du lädst sie beim ersten Start in der App herunter.

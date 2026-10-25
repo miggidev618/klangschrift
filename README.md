@@ -1,73 +1,49 @@
 # Klangschrift
 
-Lokales Diktieren für Mac und iPhone. Klangschrift verarbeitet Aufnahmen auf dem Gerät; Modelle und Paketabhängigkeiten werden bei Einrichtung aus ihren jeweiligen Quellen geladen.
+Diktieren auf dem Mac und dem iPhone. Die Spracherkennung läuft auf dem Gerät, deine Aufnahmen gehen nirgendwo hin.
 
 <p align="center"><img src="docs/images/klangschrift-logo.png" width="180" alt="Klangschrift-Logo"></p>
 
-| Plattform | Version | Bereitstellung |
-| --- | --- | --- |
-| Mac | 1.0 (Build 59) | [Privates Release v1.0](https://github.com/miggidev618/klangschrift/releases/tag/v1.0) oder Selbstbau |
-| iPhone | 1.0.2 (Build 30) | Selbstbau in Xcode auf dem eigenen Gerät |
+## Was es kann
 
-## Funktionen
+- **Mac:** Taste halten, sprechen, loslassen – der Text landet im aktiven Fenster. Eine kleine Pille am Bildschirmrand zeigt, dass Klangschrift zuhört. Dazu ein Verlauf mit Suche und Kalender.
+- **iPhone:** eine eigene Tastatur zum Diktieren in jeder App, dazu Verlauf und Speicherverwaltung.
+- **Wörterbuch:** eigene Wörter und Ersetzungen, damit Namen und Fachbegriffe richtig geschrieben werden.
 
-- **Mac:** Sprechtaste und verschiebbare Pille, Verlauf mit Kalender, Bearbeiten und Kopieren sowie eigene Wörter und Ersetzungen.
-- **iPhone:** kompakte Diktattastatur, Rückkehr zur vorherigen App, Wischhinweis an der unteren Gestenzone sowie Verlauf und eigene Schreibweisen.
-- **Speicher & Daten:** iPhone-Verlauf, nicht aktive heruntergeladene Modelle und Klangschrift-Zwischenspeicher lassen sich im Leerlauf gezielt bereinigen.
-- **Lokal:** Diktate bleiben auf dem Gerät. Die Wirkung eigener Wörter hängt vom gewählten Modell ab und ist nicht garantiert.
-
-## Ein Blick in die Mac-App
-
-Die Diktatansicht bündelt Aufnahme, Übersicht und die letzten Diktate.
-
-![Diktatansicht von Klangschrift](docs/images/mac-dictation.png)
+![Klangschrift auf dem Mac](docs/images/mac-dictation.png)
 
 <details>
-<summary>Weitere Ansichten: Verlauf und Modellvergleich</summary>
+<summary>Mehr Bilder</summary>
 
-Der Verlauf zeigt gespeicherte Diktate und eine Suche. Das Bild enthält einen neutralen Testeintrag.
+![Verlauf](docs/images/mac-history.png)
 
-![Verlauf von Klangschrift](docs/images/mac-history.png)
-
-Der Modellvergleich zeigt die verfügbaren Modelle und ihre in der App dargestellten Eigenschaften.
-
-![Modellvergleich von Klangschrift](docs/images/mac-models.png)
-
-</details>
-
-### iPhone
+![Modelle](docs/images/mac-models.png)
 
 <p>
-  <img src="docs/images/iphone-dictation.png" width="250" alt="Klangschrift-Diktatansicht auf dem iPhone">
-  <img src="docs/images/iphone-keyboard.png" width="250" alt="Klangschrift-Tastatur in einer neutralen Notiz">
-  <img src="docs/images/iphone-swipe.png" width="250" alt="Hinweis zur Rückwischgeste auf dem iPhone">
+  <img src="docs/images/iphone-dictation.png" width="250" alt="Diktieren auf dem iPhone">
+  <img src="docs/images/iphone-keyboard.png" width="250" alt="Tastatur">
+  <img src="docs/images/iphone-swipe.png" width="250" alt="Zurück zur vorherigen App">
+  <img src="docs/images/iphone-settings.png" width="250" alt="Einstellungen">
 </p>
-
-<details>
-<summary>Einstellungen auf dem iPhone</summary>
-
-<img src="docs/images/iphone-settings.png" width="250" alt="Klangschrift-Einstellungen auf dem iPhone">
 
 </details>
 
-## Bauen
+## Installieren
 
-Für Apple-Silicon-Macs steht im [privaten Release v1.0](https://github.com/miggidev618/klangschrift/releases/tag/v1.0) ein ad-hoc-signiertes, nicht notarisiertes Paket bereit. macOS kann deshalb beim ersten Start eine Sicherheitsabfrage zeigen. Eine allgemein installierbare iPhone-Datei wird nicht angeboten; die iPhone-App wird auf dem eigenen Gerät in Xcode gebaut.
+**Mac** (Apple Silicon, macOS 26 oder neuer): Die App unter [Releases](https://github.com/miggidev618/klangschrift/releases) herunterladen, entpacken und in den Programme-Ordner ziehen. Beim ersten Start meldet macOS, dass die App von einem nicht verifizierten Entwickler stammt. Dann mit Rechtsklick → Öffnen starten oder unter Systemeinstellungen → Datenschutz & Sicherheit → „Dennoch öffnen“ erlauben.
 
-- [Mac bauen](docs/BUILD-MAC.md)
-- [iPhone bauen](docs/BUILD-IOS.md)
+**iPhone:** Die App selbst mit Xcode bauen, siehe [iPhone bauen](docs/BUILD-IOS.md).
+
+Wer den Mac-Teil selbst bauen will: [Mac bauen](docs/BUILD-MAC.md).
+
+## Mehr
+
 - [Datenschutz](docs/PRIVACY.md)
-- [Modelle und Quellen](docs/MODELS.md)
-- [Drittanbieterhinweise](THIRD-PARTY-NOTICES.md)
-
-Für den Mac wird Apple Silicon und macOS 26 oder neuer vorausgesetzt. Das aktuelle offizielle Moonshine-SDK wurde für macOS 26 gebaut; frühere macOS-Versionen sind damit nicht geprüft. Für das iPhone benötigt man einen Mac mit Xcode, ein zum gewählten Modell passendes iPhone und eine eigene Apple-ID für das persönliche Entwicklungsteam.
-
-## Hilfe
-
-Bitte keine Audioaufnahmen, Diktate, privaten Verläufe, Tokens oder Gerätekennungen in Fehlerberichte aufnehmen. Beschreibe stattdessen Gerät, Systemversion, gewähltes Modell und reproduzierbare Schritte.
+- [Modelle](docs/MODELS.md)
+- [Änderungen](CHANGELOG.md)
 
 ## Lizenz
 
-Copyright (c) 2026 miggidev618.
+GPL-3.0 – siehe [LICENSE](LICENSE). Fremde Bestandteile behalten ihre eigenen Lizenzen, siehe [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
-Der eigene Code steht unter [GPL-3.0-only](LICENSE). Drittbestandteile behalten ihre jeweiligen Lizenzen; siehe [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+© 2026 miggidev618
