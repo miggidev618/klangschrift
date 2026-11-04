@@ -13,6 +13,8 @@ import KlangschriftAppAdapters
 }
 
 @MainActor private final class AppKitDashboardWindow: DashboardAppWindow {
+    static let defaultContentSize = NSSize(width: 1040, height: 680)
+    static let minimumContentSize = NSSize(width: 760, height: 520)
     private let window: NSWindow
     init(composition: AppComposition) {
         window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1040, height: 680), styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
@@ -21,10 +23,19 @@ import KlangschriftAppAdapters
         window.isReleasedWhenClosed = false
         // Keep the exact production hierarchy: PermissionRecoveryHost, onboarding,
         // startup tasks and the ready graph all remain inside ProductionRootView.
-        window.contentViewController = NSHostingController(rootView: ProductionRootView(composition: composition))
+        let host = NSHostingController(rootView: ProductionRootView(composition: composition))
+        // The window owns its size. Letting the hosting controller drive it
+        // collapsed the window to its (empty) startup content: 1 x 32 pt.
+        host.sizingOptions = []
+        window.contentViewController = host
+        window.contentMinSize = Self.minimumContentSize
         let restored = window.setFrameUsingName(KlangschriftApplicationLifecycle.frameAutosaveName)
         window.setFrameAutosaveName(KlangschriftApplicationLifecycle.frameAutosaveName)
-        if !restored { window.center() }
+        let content = window.contentRect(forFrameRect: window.frame).size
+        if !restored || content.width < Self.minimumContentSize.width || content.height < Self.minimumContentSize.height {
+            window.setContentSize(Self.defaultContentSize)
+            window.center()
+        }
     }
     var isVisible: Bool { window.isVisible }
     func show() {
