@@ -32,7 +32,12 @@ Dictation on Mac and iPhone. Speech recognition runs on the device, and your rec
 
 ## Install
 
-**Mac** (Apple Silicon, macOS 26 or newer): Download the app from [Releases](https://github.com/miggidev618/klangschrift/releases), unzip it and move it to the Applications folder. The first time you open it, macOS says the app is from an unverified developer. Then open it with right-click → Open, or allow it under System Settings → Privacy & Security → “Open Anyway”.
+**Mac** (Apple Silicon, macOS 26 or newer):
+
+1. Download the ZIP from [Releases](https://github.com/miggidev618/klangschrift/releases), unzip it and move `Klangschrift.app` to the Applications folder.
+2. **First launch:** Klangschrift has no Apple signature, so macOS blocks it at first. Open System Settings → Privacy & Security, scroll down and click **“Open Anyway”** next to Klangschrift. Then open the app again and confirm.
+3. **Allow access:** The setup asks for Microphone, Accessibility and Input Monitoring. **After allowing Input Monitoring, quit Klangschrift once and open it again** – macOS only applies this permission after a restart.
+4. **First start takes a few minutes:** Klangschrift downloads the speech model (Whisper Large v3, about 3 GB) and checks it. This happens only once.
 
 **iPhone:** Build the app yourself with Xcode; see [Build for iPhone](docs/BUILD-IOS.md).
 

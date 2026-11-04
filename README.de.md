@@ -32,7 +32,12 @@ Diktieren auf dem Mac und dem iPhone. Die Spracherkennung läuft auf dem Gerät,
 
 ## Installieren
 
-**Mac** (Apple Silicon, macOS 26 oder neuer): Die App unter [Releases](https://github.com/miggidev618/klangschrift/releases) herunterladen, entpacken und in den Programme-Ordner ziehen. Beim ersten Start meldet macOS, dass die App von einem nicht verifizierten Entwickler stammt. Dann mit Rechtsklick → Öffnen starten oder unter Systemeinstellungen → Datenschutz & Sicherheit → „Dennoch öffnen“ erlauben.
+**Mac** (Apple Silicon, macOS 26 oder neuer):
+
+1. Die ZIP-Datei unter [Releases](https://github.com/miggidev618/klangschrift/releases) herunterladen, entpacken und `Klangschrift.app` in den Programme-Ordner ziehen.
+2. **Erster Start:** Klangschrift hat keine Apple-Signatur, deshalb blockiert macOS die App zuerst. Unter Systemeinstellungen → Datenschutz & Sicherheit nach unten scrollen und bei Klangschrift auf **„Dennoch öffnen“** klicken. Danach die App nochmals öffnen und bestätigen.
+3. **Zugriffe erlauben:** Die Einrichtung fragt nach Mikrofon, Bedienungshilfen und Eingabeüberwachung. **Nach der Eingabeüberwachung Klangschrift einmal beenden und neu öffnen** – macOS übernimmt diese Freigabe erst nach einem Neustart der App.
+4. **Der erste Start dauert ein paar Minuten:** Klangschrift lädt das Sprachmodell (Whisper Large v3, ca. 3 GB) herunter und prüft es. Das passiert nur einmal.
 
 **iPhone:** Die App selbst mit Xcode bauen, siehe [iPhone bauen](docs/BUILD-IOS.de.md).
 
