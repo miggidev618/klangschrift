@@ -1681,7 +1681,7 @@ public enum ProductionAssemblyFactory {
             let imports: URL?
             if python == nil { imports = try ProductionRuntimeLocations.bundledPythonImportRoot() }
             else { imports = nil }
-            return try await AppFoundationComposition.bootstrap(applicationSupport: applicationSupport, keyProvider: KeychainDatabaseKeyProvider(), snapshot: resolvedSnapshot, python: bundledPython, helper: try helper ?? ProductionRuntimeLocations.bundledHelper(), pins: primaryPins, modelPinsOverride: pins, isolatedImportRoot: imports, legacyImport: legacyImport, existingKeyAccess: access)
+            return try await AppFoundationComposition.bootstrap(applicationSupport: applicationSupport, keyProvider: KeychainDatabaseKeyProvider(), snapshot: resolvedSnapshot, python: bundledPython, helper: try helper ?? ProductionRuntimeLocations.bundledHelper(), pins: primaryPins, modelPinsOverride: pins, isolatedImportRoot: imports, legacyImport: legacyImport, existingKeyAccess: access, modelDownloader: LegacyMLXModelDownloader())
         }
         return AppComposition(bootstrap: { try await bootstrapOperation(.noninteractiveProbe) }, bootstrapWithKeyAccess: bootstrapOperation, assemble: assemble, prefoundationTest: { arbiter in
             AppComposition.productionPrefoundationTest(applicationSupport: applicationSupport, snapshot: resolvedSnapshot, python: python, helper: helper, pins: primaryPins, arbiter: arbiter)

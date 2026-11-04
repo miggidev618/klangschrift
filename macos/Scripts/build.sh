@@ -161,6 +161,7 @@ for dist_info in sorted(site_packages.glob("*.dist-info"), key=lambda path: path
         shutil.copyfile(source, destination)
 (notices / "INVENTORY.txt").write_text("\n".join(inventory) + "\n", encoding="utf-8")
 PYTHON_NOTICES
+python3 "$script_dir/relocate-python-runtime.py" "$app/Contents/Resources/Runtime/Python.framework/Versions/3.14"
 ln -s 3.14 "$app/Contents/Resources/Runtime/Python.framework/Versions/Current"
 ln -s Versions/Current/Python "$app/Contents/Resources/Runtime/Python.framework/Python"
 ln -s Versions/Current/Resources "$app/Contents/Resources/Runtime/Python.framework/Resources"
@@ -172,11 +173,34 @@ for spec in '16 icon_16x16.png' '32 icon_16x16@2x.png' '32 icon_32x32.png' '64 i
 done
 iconutil --convert icns --output "$app/Contents/Resources/Klangschrift.icns" "$iconset"
 
+# The app links SherpaOnnxC via @rpath with rpath @loader_path, so the
+# framework must sit next to the executable in Contents/MacOS.
+ditto --norsrc --noextattr --noacl Vendor/DesktopSDKs/Sherpa/SherpaOnnxC.xcframework/macos-arm64_x86_64/SherpaOnnxC.framework "$app/Contents/MacOS/SherpaOnnxC.framework"
+
 find "$app" -type f -exec chmod 644 {} +
-chmod 755 "$app/Contents/MacOS/"* "$app/Contents/Resources/Runtime/Python.framework/Versions/3.14/bin/python3.14"
-codesign --force --deep --sign - --options runtime --timestamp=none "$app/Contents/Resources/Runtime/Python.framework"
+# Every Mach-O keeps its execute bit (incl. Python.app/Contents/MacOS/Python,
+# which bin/python3.14 spawns); plain resources stay 644.
+find "$app" -type f -print0 | while IFS= read -r -d '' file; do
+  [[ $(head -c 4 "$file" | xxd -p) == (cffaedfe|cafebabe) ]] && chmod 755 "$file"
+done
+# Python runtime: sign every Mach-O ad hoc *without* hardened runtime, inner
+# code first. Mixed signatures (Homebrew linker signatures plus ours) make
+# dyld reject the framework library at launch.
+runtime_version="$app/Contents/Resources/Runtime/Python.framework/Versions/3.14"
+find "$runtime_version" -type f -perm -u+x \( -name '*.so' -o -name '*.dylib' \) -print0 | xargs -0 codesign --force --sign - --timestamp=none
+codesign --force --sign - --timestamp=none "$runtime_version/Python"
+codesign --force --sign - --timestamp=none "$runtime_version/Resources/Python.app/Contents/MacOS/Python"
+codesign --force --sign - --timestamp=none "$runtime_version/Resources/Python.app"
+for executable in "$runtime_version"/bin/*(N); do
+  [[ -f "$executable" && ! -L "$executable" && $(head -c 4 "$executable" | xxd -p) == (cffaedfe|cafebabe) ]] && codesign --force --sign - --timestamp=none "$executable"
+done
+codesign --force --sign - --timestamp=none "$app/Contents/Resources/Runtime/Python.framework"
 codesign --verify --deep --strict "$app/Contents/Resources/Runtime/Python.framework"
-codesign --force --sign - --options runtime --timestamp=none "$app/Contents/MacOS/KlangschriftDesktopNativeWorker"
+codesign --force --sign - --timestamp=none "$app/Contents/MacOS/SherpaOnnxC.framework"
+# Smoke test: the bundled runtime must start without any Homebrew paths
+# (-B: no .pyc files may be written into the sealed bundle).
+"$runtime_version/bin/python3.14" -I -B -S -c 'import sys; sys.path.append(sys.argv[1]); import ssl, sqlite3, decimal, lzma, numpy, mlx.core' "$runtime_site"
+codesign --force --sign - --options runtime --timestamp=none --entitlements Resources/KlangschriftWorker.entitlements "$app/Contents/MacOS/KlangschriftDesktopNativeWorker"
 codesign --force --sign - --options runtime --timestamp=none "$app/Contents/MacOS/KlangschriftDesktopModelInstaller"
 codesign --force --sign - --options runtime --timestamp=none --entitlements Resources/Klangschrift.entitlements "$app/Contents/MacOS/Klangschrift"
 codesign --verify --deep --strict "$app"

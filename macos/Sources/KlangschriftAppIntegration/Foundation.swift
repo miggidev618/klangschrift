@@ -364,6 +364,64 @@ public enum LegacyMLXImportEntry {
     }
 }
 
+/// First-run installer for the pinned MLX Whisper model. A fresh Mac has no
+/// model, but startup requires one, so setup could never finish (1.0 bug).
+/// Files come from the pinned Hugging Face revision and are accepted only if
+/// every SHA-256 matches the pins; the model directory appears atomically and
+/// an existing app-owned model is never replaced.
+public struct LegacyMLXModelDownloader: Sendable {
+    public typealias Fetch = @Sendable (URL) async throws -> URL
+    private let fetch: Fetch
+    public init(fetch: @escaping Fetch = { url in
+        let (file, response) = try await URLSession.shared.download(from: url)
+        guard let http = response as? HTTPURLResponse, http.statusCode == 200 else { throw AppFoundationFailure.modelUnavailable }
+        return file
+    }) { self.fetch = fetch }
+
+    /// `models--owner--name/snapshots/<revision>` -> `owner/name`, `<revision>`.
+    static func source(of pins: LocalModelPins) throws -> (repository: String, revision: String) {
+        let snapshot = pins.allowedSnapshot
+        let modelDirectory = snapshot.deletingLastPathComponent().deletingLastPathComponent().lastPathComponent
+        guard modelDirectory.hasPrefix("models--") else { throw AppFoundationFailure.invalidConfiguration }
+        let parts = modelDirectory.dropFirst("models--".count).components(separatedBy: "--")
+        let revision = snapshot.lastPathComponent
+        guard parts.count == 2, parts.allSatisfy({ !$0.isEmpty && !$0.contains("/") }), revision.count == 40, revision.allSatisfy(\.isHexDigit) else { throw AppFoundationFailure.invalidConfiguration }
+        return (parts.joined(separator: "/"), revision)
+    }
+
+    public func ensureInstalled(_ pins: LocalModelPins) async throws {
+        let modelRoot = pins.allowedSnapshot.deletingLastPathComponent().deletingLastPathComponent()
+        if FileManager.default.fileExists(atPath: modelRoot.path) { return }
+        let (repository, revision) = try Self.source(of: pins)
+        let parent = modelRoot.deletingLastPathComponent()
+        try FileManager.default.createDirectory(at: parent, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
+        let stage = parent.appendingPathComponent(".download-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: stage) }
+        let stagedSnapshot = stage.appendingPathComponent("snapshots/\(revision)", isDirectory: true)
+        try FileManager.default.createDirectory(at: stagedSnapshot, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
+        try FileManager.default.createDirectory(at: stage.appendingPathComponent("blobs", isDirectory: true), withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
+        for (name, expected) in pins.fileSHA256.sorted(by: { $0.key < $1.key }) {
+            guard !name.contains("/"), let url = URL(string: "https://huggingface.co/\(repository)/resolve/\(revision)/\(name)") else { throw AppFoundationFailure.invalidConfiguration }
+            let downloaded = try await fetch(url)
+            defer { try? FileManager.default.removeItem(at: downloaded) }
+            guard try Self.sha256(of: downloaded) == expected else { throw AppFoundationFailure.modelIntegrity }
+            let destination = stagedSnapshot.appendingPathComponent(name, isDirectory: false)
+            try FileManager.default.moveItem(at: downloaded, to: destination)
+            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: destination.path)
+        }
+        do { try FileManager.default.moveItem(at: stage, to: modelRoot) }
+        catch { if !FileManager.default.fileExists(atPath: modelRoot.path) { throw error } }
+    }
+
+    static func sha256(of file: URL) throws -> String {
+        let handle = try FileHandle(forReadingFrom: file)
+        defer { try? handle.close() }
+        var hasher = SHA256()
+        while let chunk = try handle.read(upToCount: 4 << 20), !chunk.isEmpty { hasher.update(data: chunk) }
+        return hasher.finalize().map { String(format: "%02x", $0) }.joined()
+    }
+}
+
 /// Narrow, explicit migration port for legacy MLX bytes. It never locates a
 /// home/cache path itself and never replaces an existing app-owned model.
 public struct LegacyMLXModelImporter: Sendable {
@@ -583,7 +641,7 @@ public enum AppFoundationComposition {
         case .whisperLargeV3Turbo: return .whisperLargeV3Turbo
         }
     }
-    public static func bootstrap(applicationSupport: URL, keyProvider: any DatabaseKeyProviding, snapshot: URL, python: URL, helper: URL, pins: LocalModelPins = .whisperLargeV3, recorder: any StartupRecoveryRecording = NoopStartupRecoveryRecorder(), modelPinsOverride: [LocalModelProfile: LocalModelPins]? = nil, isolatedImportRoot: URL? = nil, legacyImport: LegacyMLXImportRequest? = nil, existingKeyAccess: ExistingDatabaseKeyAccess = .noninteractiveProbe) async throws -> AppFoundation {
+    public static func bootstrap(applicationSupport: URL, keyProvider: any DatabaseKeyProviding, snapshot: URL, python: URL, helper: URL, pins: LocalModelPins = .whisperLargeV3, recorder: any StartupRecoveryRecording = NoopStartupRecoveryRecorder(), modelPinsOverride: [LocalModelProfile: LocalModelPins]? = nil, isolatedImportRoot: URL? = nil, legacyImport: LegacyMLXImportRequest? = nil, existingKeyAccess: ExistingDatabaseKeyAccess = .noninteractiveProbe, modelDownloader: LegacyMLXModelDownloader? = nil) async throws -> AppFoundation {
         let paths = try AppPaths(applicationSupport: applicationSupport); recorder.record(.paths)
         if let legacyImport {
             guard let destination = modelPinsOverride?[legacyImport.profile] else { throw AppFoundationFailure.modelIntegrity }
@@ -607,6 +665,11 @@ public enum AppFoundationComposition {
         let preferences = try await store.preferences(); recorder.record(.preferences)
         let projection = RuntimeSettingsProjection(model: preferences.snapshot.model, language: preferences.snapshot.language); try projection.validate(); recorder.record(.projection)
         let effectivePins = try effectivePins(model: preferences.snapshot.model, pins: pins, override: modelPinsOverride)
+        if let modelDownloader {
+            // Only the pinned default model is fetched on first run; a missing
+            // Turbo model still falls back to it below.
+            try await modelDownloader.ensureInstalled(try AppFoundationComposition.effectivePins(model: .whisperLargeV3, pins: pins, override: modelPinsOverride))
+        }
         let model: ResolvedLocalModel
         do { model = try LocalModelResolver().resolve(snapshot: effectivePins.allowedSnapshot, python: python, helper: helper, pins: effectivePins) }
         catch {
